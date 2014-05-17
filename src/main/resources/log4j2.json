@@ -1,0 +1,25 @@
+/**
+ * Barebones logging
+ */
+{
+  "configuration": {
+    "name": "SandboxLogger",
+    "appenders": {
+      "Console": {
+        "name":"Console",
+        "target":"SYSTEM_OUT",
+        "PatternLayout": {
+          "alwaysWriteExceptions": false,
+          "pattern": "%-5level [%d{ISO8601}] [%logger{1}] %msg%n%replace{%ex{short.className}}{^.+$}{! }%replace{%xEx{full}}{\n\t}{\n!\t}"
+          //INFO  [2014-05-12 17:56:17,646] [HttpListener] Bound to localhost/127.0.0.1:9080
+        }
+      }
+    },
+    "loggers": {
+      "root": { "level": "debug", "appender-ref": { "ref":"Console" }},
+      "logger": [
+        { "name": "akka", "level": "info" }
+      ]
+    }
+  }
+}
