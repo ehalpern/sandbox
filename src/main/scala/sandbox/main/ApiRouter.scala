@@ -2,34 +2,35 @@ package sandbox.main
 
 import spray.routing.{HttpServiceActor, HttpService}
 import akka.event.Logging
-import sandbox.api.ExampleApi
 import javax.inject.Inject
+import sandbox.core.ApiRoute
 
-class ApiRouterActor @Inject()(exampleApi: ExampleApi) extends HttpServiceActor with ApiRouter
+class ApiRouterActor @Inject()(apiSet: Set[ApiRoute]) extends HttpServiceActor with ApiRouter
 {
-  def receive = {
-    runRoute(apiRoutes)
-  }
+  def apis = apiSet.toSeq
 
-  def apiRouters = {
-    Map("example" -> exampleApi)
+  def receive = {
+    runRoute(route)
   }
 }
 
 trait ApiRouter extends HttpService
 {
+  def apis: Seq[ApiRoute]
+
   // Use the enclosing actor's dispatcher
   implicit def executionContext = {
     actorRefFactory.dispatcher
   }
 
-  def apiRoutes = {
+  lazy val route =
     logRequestResponse("MARK", Logging.InfoLevel) {
-      pathPrefix(apiRouters.head._1) {
-        apiRouters.head._2.routes
+      apis.tail.foldLeft(apis.head.route) { (chain, next) =>
+        chain ~ next.route
       }
     }
-  }
 
-  def apiRouters(): Map[String, ExampleApi]
+  def apiRoutes = {
+    route
+  }
 }
