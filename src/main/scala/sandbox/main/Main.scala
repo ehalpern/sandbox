@@ -4,8 +4,11 @@ import com.google.inject.Guice
 import akka.actor.{Props, ActorSystem}
 import sandbox.util.guice.{ConfigBindingSupport, GuiceInjectedActorProducer}
 import net.codingwell.scalaguice.ScalaModule
-import sandbox.core._
+import sandbox.app._
 import sandbox.util.config.ConfigFactory
+import sandbox.app.api.ApiModule
+import sandbox.app.core.ServiceModule
+import sandbox.server.{ApiRouterActor, Server}
 
 object Main extends App
 {

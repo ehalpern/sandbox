@@ -1,7 +1,5 @@
 package sandbox.util.guice
 
-import sandbox.core.{ExampleApi, ExampleServiceImpl, ExampleService}
-import sandbox.util.config.ConfigFactory
 import net.codingwell.scalaguice.ScalaModule
 import com.typesafe.config.Config
 

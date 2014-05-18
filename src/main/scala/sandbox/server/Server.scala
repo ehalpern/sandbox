@@ -1,4 +1,4 @@
-package sandbox.main
+package sandbox.server
 
 import akka.actor.{ActorSystem, ActorRef}
 import akka.io.IO

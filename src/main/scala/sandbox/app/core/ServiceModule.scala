@@ -1,9 +1,9 @@
-package sandbox.core
+package sandbox.app.core
 
 import net.codingwell.scalaguice.ScalaModule
 
 class ServiceModule extends ScalaModule {
   def configure {
-    bind[ExampleService].to[ExampleServiceImpl]
+    bind[FailService].to[FailServiceImpl]
   }
 }
