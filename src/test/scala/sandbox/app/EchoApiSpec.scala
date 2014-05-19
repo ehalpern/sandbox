@@ -1,20 +1,20 @@
 package sandbox.app
 
-import org.scalatest.FunSpec
+import org.scalatest.{WordSpec, FunSpec}
 import spray.testkit.ScalatestRouteTest
 import sandbox.app.api.EchoApi
 
 /**
  */
-class EchoApiSpec extends FunSpec
+class EchoApiSpec extends WordSpec
   with ScalatestRouteTest
 {
   def actorRefFactory = system
 
   val route = (new EchoApi).route
 
-  describe("GET /echo?msg=foo") {
-    it("should response with foo") {
+  "GET /echo?msg=foo" should {
+    "respond with foo" in {
       Get("/echo?msg=foo") ~> route ~> check {
         responseAs[String] === "foo"
       }

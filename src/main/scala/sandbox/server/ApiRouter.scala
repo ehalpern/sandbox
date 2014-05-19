@@ -6,49 +6,62 @@ import javax.inject.Inject
 import spray.util.LoggingContext
 import spray.http.StatusCodes
 import com.typesafe.scalalogging.slf4j.LazyLogging
+import spray.routing.MissingQueryParamRejection
 
 class ApiRouterActor @Inject()(apiSet: Set[ApiPlugin]) extends HttpServiceActor with ApiRouter
 {
-  def apis = apiSet.toSeq
-
   def receive = {
-    runRoute(route)
+    runRoute(standardRoute)
   }
+
+  protected[this] def apis = apiSet.toSeq
 }
 
 
 trait ApiRouter extends HttpService with LazyLogging
 {
-  def apis: Seq[ApiPlugin]
+  /**
+   * @return List of apis to include in route
+   */
+  protected[this] def apis: Seq[ApiPlugin]
 
   // Use the enclosing actor's dispatcher
-  implicit def executionContext = {
+  protected[this] implicit def executionContext = {
     actorRefFactory.dispatcher
   }
 
-  // Use the enclosing actor's dispatcher
-  implicit def exceptionHandler(implicit log: LoggingContext) = {
+  protected[this] lazy val standardRoute =
+    logRequestResponse("MARK", Logging.InfoLevel) {
+      handleRejections(rejectionHandler) {
+        handleExceptions(exceptionHandler) {
+          apis.tail.foldLeft(apis.head.route) { (chain, next) =>
+            chain ~ next.route
+          }
+        }
+      }
+    }
+
+  /**
+   * Override default to respond with 503 rather than 500
+   */
+  override def timeoutRoute: Route = {
+    complete(
+      StatusCodes.ServiceUnavailable,
+      "The server could not provide a timely response."
+    )
+  }
+
+  private def exceptionHandler(implicit log: LoggingContext) = {
     ExceptionHandler {
       case e: ExceptionWithStatus =>
         complete(e.statusCode, e.msg)
     }
   }
 
-  implicit val rejectionHandler = {
+  private val rejectionHandler = {
     RejectionHandler {
       case MissingQueryParamRejection(param) :: _ =>
         complete(StatusCodes.BadRequest, s"Request is missing required query parameter '$param'")
     }
-  }
-
-  lazy val route =
-    logRequestResponse("MARK", Logging.InfoLevel) {
-      apis.tail.foldLeft(apis.head.route) { (chain, next) =>
-        chain ~ next.route
-      }
-    }
-
-  def apiRoutes = {
-    route
   }
 }
