@@ -1,8 +1,7 @@
-package sandbox.app
+package sandbox.app.echo
 
-import org.scalatest.{WordSpec, FunSpec}
+import org.scalatest.WordSpec
 import spray.testkit.ScalatestRouteTest
-import sandbox.app.api.EchoApi
 
 /**
  */

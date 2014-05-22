@@ -17,28 +17,35 @@ resolvers ++= Seq(
 )
 
 {
+  val AkkaVersion = "2.3.2"
+  val Json4sVersion = "3.2.9"
+  val Log4jVersion = "2.0-rc1"
+  val SprayVersion = "1.3.1-20140423"
+  val ScalaTestVersion = "2.1.4"
+  val ScalaMockVersion = "3.1.1"
   libraryDependencies ++= Seq(
     "com.etaty.rediscala" %% "rediscala" % "1.3.1",
     "com.github.scopt" %% "scopt" % "3.2.0",
-    "com.typesafe.akka" %% "akka-actor" % "2.3.2",
-    "com.typesafe.akka" %% "akka-slf4j" % "2.3.2",
+    "com.typesafe.akka" %% "akka-actor" % AkkaVersion,
+    "com.typesafe.akka" %% "akka-slf4j" % AkkaVersion,
     "com.typesafe" % "config" % "1.2.0",
     "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2",
     "commons-io" % "commons-io" % "2.1",
-    "io.spray" %% "spray-can" % "1.3.1-20140423",
-    "io.spray" %% "spray-routing" % "1.3.1-20140423",
+    "io.spray" %% "spray-can" % SprayVersion,
+    "io.spray" %% "spray-client" % SprayVersion,
+    "io.spray" %% "spray-json" % "1.2.6",
+    "io.spray" %% "spray-routing" % SprayVersion,
     "net.codingwell" %% "scala-guice" % "4.0.0-beta4",
-    "org.apache.logging.log4j" % "log4j-api" % "2.0-rc1",
-    "org.apache.logging.log4j" % "log4j-core" % "2.0-rc1",
-    "org.apache.logging.log4j" % "log4j-slf4j-impl" % "2.0-rc1",
-    "org.json4s" %% "json4s-jackson" % "3.2.9",
-    "org.json4s" %% "json4s-ext" % "3.2.9",
-    //          5
-    // test dependencies
-    //
-    "io.spray" %% "spray-testkit" % "1.3.1-20140423" % "test",
-    "org.scalatest" %% "scalatest" % "2.1.4" % "test",
-    "org.scalamock" %% "scalamock-core" % "3.1.1" % "test",
-    "org.scalamock" %% "scalamock-scalatest-support" % "3.1.1" % "test"
+    "org.apache.logging.log4j" % "log4j-api" % Log4jVersion,
+    "org.apache.logging.log4j" % "log4j-core" % Log4jVersion,
+    "org.apache.logging.log4j" % "log4j-slf4j-impl" % Log4jVersion,
+    "org.json4s" %% "json4s-jackson" % Json4sVersion,
+    "org.json4s" %% "json4s-ext" % Json4sVersion,
+    //-------------------------------------------------------------------------
+    "com.typesafe.akka" %% "akka-testkit" % AkkaVersion % "test",
+    "io.spray" %% "spray-testkit" % SprayVersion % "test",
+    "org.scalatest" %% "scalatest" % ScalaTestVersion % "test",
+    "org.scalamock" %% "scalamock-core" % ScalaMockVersion % "test",
+    "org.scalamock" %% "scalamock-scalatest-support" % ScalaMockVersion % "test"
   )
 }

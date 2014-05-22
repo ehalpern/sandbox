@@ -6,8 +6,6 @@ import sandbox.util.guice.{ConfigBindingSupport, GuiceInjectedActorProducer}
 import net.codingwell.scalaguice.ScalaModule
 import sandbox.app._
 import sandbox.util.config.ConfigFactory
-import sandbox.app.api.ApiModule
-import sandbox.app.core.ServiceModule
 import sandbox.server.{ApiRouterActor, Server}
 
 object Main extends App
@@ -22,8 +20,8 @@ object Main extends App
         bindConfig(ConfigFactory.load)
       }
     },
-    new ServiceModule,
-    new ApiModule
+    new Services,
+    new Apis
   )
 
   // Create the root akka service.  Provide a guice factory for akka to use

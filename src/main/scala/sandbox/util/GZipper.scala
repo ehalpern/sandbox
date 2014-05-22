@@ -1,6 +1,6 @@
 package sandbox.util
 
-import spray.httpx.encoding.{GzipDecompressor, GzipCompressor}
+import _root_.spray.httpx.encoding.{GzipDecompressor, GzipCompressor}
 
 /**
   */

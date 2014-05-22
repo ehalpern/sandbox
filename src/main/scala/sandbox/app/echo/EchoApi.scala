@@ -1,4 +1,4 @@
-package sandbox.app.api
+package sandbox.app.echo
 
 import spray.routing.Directives
 
