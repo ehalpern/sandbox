@@ -1,7 +1,7 @@
 package sandbox.util.redis
 
 import org.scalatest.FunSpec
-import sandbox.util.{Json4s, GZipper}
+import sandbox.util.GZipper
 
 /**
  */

@@ -15,7 +15,7 @@ class ClimateApi @Inject()(
 ) extends Directives
   with ApiPlugin
   with LazyLogging
-  with ClimateApi.JsonSupport
+  with ClimateApiJsonSupport
 {
   def route(implicit ec: ExecutionContext) = {
     path("climate") {
@@ -34,11 +34,9 @@ class ClimateApi @Inject()(
   }
 }
 
-object ClimateApi  {
-  trait JsonSupport extends Json4sJacksonSupport {
-    import sandbox.app.climate.model.{PrecipitationUnit, TemperatureUnit}
-    def json4sJacksonFormats: Formats = DefaultFormats +
-      new EnumNameSerializer(TemperatureUnit) +
-      new EnumNameSerializer(PrecipitationUnit)
-  }
+trait ClimateApiJsonSupport extends Json4sJacksonSupport {
+  import sandbox.app.climate.model.{PrecipitationUnit, TemperatureUnit}
+  def json4sJacksonFormats: Formats = DefaultFormats +
+    new EnumNameSerializer(TemperatureUnit) +
+    new EnumNameSerializer(PrecipitationUnit)
 }

@@ -50,6 +50,8 @@ import com.typesafe.config.ConfigValueType._
  *
  * While the use of Strings may first appear fragile, it turns out in practice that any
  * misspelling or reference to an incorrect type will be immediately flagged on startup.
+ * So, although the checking is not done at compile time, any error will be flagged
+ * immediately on startup.
  */
 trait ConfigBindingSupport
 {

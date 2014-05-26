@@ -4,7 +4,6 @@ import org.scalatest.{Matchers, WordSpec}
 import spray.testkit.ScalatestRouteTest
 import sandbox.util.config.ConfigFactory
 import spray.http.StatusCodes
-import org.scalatest.concurrent.{ScalaFutures, IntegrationPatience}
 import scala.concurrent.duration._
 import sandbox.app.climate.model.ClimateQueryResult
 
@@ -13,9 +12,9 @@ import sandbox.app.climate.model.ClimateQueryResult
 class ClimateApiIntegSpec extends WordSpec
   with Matchers
   with ScalatestRouteTest
-  with ScalaFutures
-  with IntegrationPatience
-  with ClimateApi.JsonSupport
+  //with ScalaFutures
+  //with IntegrationPatience
+  with ClimateApiJsonSupport
 {
   def actorRefFactory = system
 
