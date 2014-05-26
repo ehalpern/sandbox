@@ -4,12 +4,13 @@ import org.scalatest.{WordSpec, Matchers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import akka.actor.ActorSystem
 
-class WbClimateApiSpec extends WordSpec
+class WbClimateClientSpec extends WordSpec
   with Matchers
   with ScalaFutures
   with IntegrationPatience // increase request timeouts
+  with WbClimateClient.JsonProtocol
 {
-  val api = new WbClimateApi(
+  val api = new WbClimateClient(
     "http://climatedataapi.worldbank.org/climateweb/rest/v1"
   )(
     ActorSystem("test")

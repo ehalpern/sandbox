@@ -1,4 +1,0 @@
-package sandbox.app.climate
-
-/**
- */

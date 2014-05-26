@@ -1,5 +1,6 @@
 package sandbox.app.climate.model
-import sandbox.app.climate.WbClimateJsonProtocol._
+
+import sandbox.app.climate.WbClimateClient.Data
 
 object TemperatureUnit extends Enumeration {
   type TemperatureUnit = Value
@@ -17,7 +18,8 @@ import PrecipitationUnit._
  */
 case class ClimateStats(
   location: String,
-  period: (Int, Int),
+  formYear: Int,
+  toYear: Int,
   temperature: Option[Temperature],
   precipitation: Option[Precipitation]
 )
@@ -29,7 +31,7 @@ object ClimateStats {
     precipitationData: Seq[Data]
   ) = {
     ClimateStats(
-      location, (fromYear, toYear),
+      location, fromYear, toYear,
       Temperature.fromData(tempData),
       Precipitation.fromData(precipitationData)
     )

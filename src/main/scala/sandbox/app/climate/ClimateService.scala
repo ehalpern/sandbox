@@ -14,7 +14,7 @@ trait ClimateService {
 }
 
 class ClimateServiceImpl @Inject()(
-  climateApi: WbClimateApi
+  climateApi: WbClimateClient
 )
   extends ClimateService with LazyLogging
 {
@@ -27,7 +27,7 @@ class ClimateServiceImpl @Inject()(
     } yield {
       ClimateStats.fromData(location, fromYear, toYear, temp, rain)
     }) map { stats =>
-      ClimateQueryResult(Seq(stats))
+      ClimateQueryResult(List(stats))
     }
   }
 }

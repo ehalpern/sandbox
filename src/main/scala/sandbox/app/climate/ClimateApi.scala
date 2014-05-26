@@ -8,16 +8,15 @@ import scala.concurrent.ExecutionContext
 import sandbox.server.ApiPlugin
 import spray.httpx.Json4sJacksonSupport
 import org.json4s.{Formats, DefaultFormats}
+import org.json4s.ext.EnumNameSerializer
 
 class ClimateApi @Inject()(
   climateService: ClimateService
 ) extends Directives
   with ApiPlugin
   with LazyLogging
-  with Json4sJacksonSupport
+  with ClimateApi.JsonSupport
 {
-  def json4sJacksonFormats: Formats = DefaultFormats
-
   def route(implicit ec: ExecutionContext) = {
     path("climate") {
       get {
@@ -32,5 +31,14 @@ class ClimateApi @Inject()(
         }
       }
     }
+  }
+}
+
+object ClimateApi  {
+  trait JsonSupport extends Json4sJacksonSupport {
+    import sandbox.app.climate.model.{PrecipitationUnit, TemperatureUnit}
+    def json4sJacksonFormats: Formats = DefaultFormats +
+      new EnumNameSerializer(TemperatureUnit) +
+      new EnumNameSerializer(PrecipitationUnit)
   }
 }

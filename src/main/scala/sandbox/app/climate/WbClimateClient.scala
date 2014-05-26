@@ -10,15 +10,13 @@ import spray.client.pipelining._
 
 import scala.concurrent.Future
 import com.typesafe.scalalogging.slf4j.LazyLogging
+import sandbox.app.climate.WbClimateClient.Data
 
 /**
  * @see http://data.worldbank.org/developers/climate-data-api
  */
 
-object WbClimateJsonProtocol extends Json4sJacksonSupport
-{
-  override implicit def json4sJacksonFormats: Formats = DefaultFormats
-
+object WbClimateClient {
   case class Data(
     gcm: String,
     variable: String,
@@ -27,14 +25,18 @@ object WbClimateJsonProtocol extends Json4sJacksonSupport
     annualData: Option[Seq[Double]],
     monthlyData: Option[Seq[Double]]
   )
+
+  trait JsonProtocol extends Json4sJacksonSupport {
+    override implicit def json4sJacksonFormats: Formats = DefaultFormats
+  }
 }
 
-private[climate] class WbClimateApi @Inject()(
+private[climate] class WbClimateClient @Inject()(
   @Named("climate.api.endpoint") endpoint: String
-) (implicit af: ActorRefFactory) extends LazyLogging
+) (implicit af: ActorRefFactory)
+  extends WbClimateClient.JsonProtocol
+  with LazyLogging
 {
-  import WbClimateJsonProtocol._
-
   private implicit val ec = af.dispatcher
 
   private val pipeline: HttpRequest => Future[Seq[Data]] = {

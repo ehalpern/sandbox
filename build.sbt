@@ -9,6 +9,11 @@ scalaVersion := "2.11.0"
 // Add external conf directory to the classpath
 unmanagedClasspath in Runtime += baseDirectory.value / "conf"
 
+unmanagedClasspath in Test += baseDirectory.value / "conf"
+
+unmanagedClasspath in IntegTest += baseDirectory.value / "conf"
+
+
 resolvers ++= Seq(
   "typesafe.com" at "http://repo.typesafe.com/typesafe/repo/",
   "sonatype.org" at "https://oss.sonatype.org/content/repositories/releases",
