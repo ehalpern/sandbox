@@ -1,5 +1,5 @@
 # A Light Scala Application Framework
-Frame builds on well-designed, widely used scala (and java) libraries to provide what is, hopefully,  
+Builds on well-designed, widely used scala/jvm libraries to provide what is, hopefully,  
 a simple, un-intrusive framework for building pragmatic, production quality server applications.
 
 Much of it's simplicity is a result of opinionated choices about how to address some of the basic 
