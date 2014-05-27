@@ -2,8 +2,8 @@ package sandbox.util.config
 
 import com.typesafe.config.{ ConfigFactory => TConfigFactory }
 
-/**
- */
+object ConfigFactoryWithEnvironmentOverride extends ConfigFactoryWithEnvironmentOverride
+
 class ConfigFactoryWithEnvironmentOverride
 {
   private lazy val config = {

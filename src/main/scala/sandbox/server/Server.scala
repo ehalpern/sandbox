@@ -6,10 +6,13 @@ import spray.can.Http
 import javax.inject.{Named, Inject}
 
 class Server @Inject()(
-  @Named("server.host") host: String,
-  @Named("server.port")  port: Int
+  @Named("server.host")       host: String,
+  @Named("server.port")       port: Int,
+  @Named("ApiRouterActorRef") routerRef: ActorRef
+) (
+  implicit actorSystem: ActorSystem
 ) {
-  def start(routerActor: ActorRef)(implicit as: ActorSystem) {
-    IO(Http) ! Http.Bind(routerActor, host, port = port)
+  def start {
+    IO(Http) ! Http.Bind(routerRef, host, port = port)
   }
 }
