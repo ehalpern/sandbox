@@ -1,21 +1,20 @@
 package sandbox.app.climate
 
 import javax.inject.{Named, Inject}
-import akka.actor.ActorRefFactory
 import spray.httpx.Json4sJacksonSupport
 import org.json4s.{DefaultFormats, Formats}
 
 import spray.http._
 import spray.client.pipelining._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import sandbox.app.climate.WbClimateClient.Data
+import akka.actor.ActorRefFactory
 
 /**
  * @see http://data.worldbank.org/developers/climate-data-api
  */
-
 object WbClimateClient {
   case class Data(
     gcm: String,
@@ -33,7 +32,9 @@ object WbClimateClient {
 
 private[climate] class WbClimateClient @Inject()(
   @Named("climate.api.endpoint") endpoint: String
-) (implicit af: ActorRefFactory)
+) (
+  implicit af: ActorRefFactory
+)
   extends WbClimateClient.JsonProtocol
   with LazyLogging
 {

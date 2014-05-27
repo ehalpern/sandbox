@@ -5,6 +5,7 @@ import akka.actor.{ActorRefFactory, ActorSystem}
 import javax.inject.{Provider, Singleton}
 import com.google.inject.{Provides, Injector}
 import sandbox.util.guice.GuiceAkkaExtension
+import scala.concurrent.ExecutionContext
 
 /**
  * Creates the root actor system and binds it to ActorSystem and ActorRefFactory.
@@ -37,5 +38,10 @@ class AkkaModule extends ScalaModule
   @Provides @Singleton
   def provideActorRefFactory(systemProvider: Provider[ActorSystem]): ActorRefFactory = {
     systemProvider.get
+  }
+
+  @Provides @Singleton
+  def provideExecutionContext(systemProvider: Provider[ActorSystem]): ExecutionContext = {
+    systemProvider.get.dispatcher
   }
 }

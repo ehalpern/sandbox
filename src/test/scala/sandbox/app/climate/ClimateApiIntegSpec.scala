@@ -12,8 +12,6 @@ import sandbox.app.climate.model.ClimateQueryResult
 class ClimateApiIntegSpec extends WordSpec
   with Matchers
   with ScalatestRouteTest
-  //with ScalaFutures
-  //with IntegrationPatience
   with ClimateApiJsonSupport
 {
   def actorRefFactory = system

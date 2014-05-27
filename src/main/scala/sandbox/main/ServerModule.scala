@@ -5,7 +5,7 @@ import sandbox.util.guice.GuiceAkkaExtension
 import sandbox.server.{Server, ApiRouterActor}
 import com.google.inject.Provides
 import akka.actor.{ActorRef, ActorSystem}
-import javax.inject.Named
+import javax.inject.{Named, Singleton}
 import sandbox.app.ApisModule
 
 /**
