@@ -10,7 +10,7 @@ organizational and wiring problems that every significant application faces.
 ## Configuration & Dependency Injection
 ## Testing
 ### Unit & Integration Tests
-### Perforamnce Tests
+### Performance Tests
 ### Load and Stress Tests
 ## Logging
 ## Metrics
