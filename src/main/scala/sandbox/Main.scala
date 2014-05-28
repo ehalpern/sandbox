@@ -1,4 +1,4 @@
-package sandbox.main
+package sandbox
 
 import com.google.inject.Guice
 import sandbox.app._
