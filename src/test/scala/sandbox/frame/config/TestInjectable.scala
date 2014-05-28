@@ -1,4 +1,4 @@
-package sandbox.util.guice
+package sandbox.frame.config
 
 import javax.inject.{Named, Inject}
 

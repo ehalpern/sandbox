@@ -5,7 +5,7 @@ import spray.routing.Directives
 import javax.inject.Inject
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import scala.concurrent.ExecutionContext
-import sandbox.server.ApiPlugin
+import sandbox.frame.spray.ApiPlugin
 import spray.httpx.Json4sJacksonSupport
 import org.json4s.{Formats, DefaultFormats}
 import org.json4s.ext.EnumNameSerializer

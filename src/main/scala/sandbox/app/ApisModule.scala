@@ -1,7 +1,7 @@
 package sandbox.app
 
 import net.codingwell.scalaguice.{ScalaMultibinder, ScalaModule}
-import sandbox.server.ApiPlugin
+import sandbox.frame.spray.ApiPlugin
 import sandbox.app.echo.EchoApi
 import sandbox.app.climate.ClimateApi
 

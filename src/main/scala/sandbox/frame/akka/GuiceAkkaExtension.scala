@@ -1,4 +1,4 @@
-package sandbox.util.guice
+package sandbox.frame.akka
 
 import akka.actor._
 import com.google.inject.Injector

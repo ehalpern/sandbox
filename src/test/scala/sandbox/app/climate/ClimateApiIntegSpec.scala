@@ -2,10 +2,10 @@ package sandbox.app.climate
 
 import org.scalatest.{Matchers, WordSpec}
 import spray.testkit.ScalatestRouteTest
-import sandbox.util.config.ConfigFactory
 import spray.http.StatusCodes
 import scala.concurrent.duration._
 import sandbox.app.climate.model.ClimateQueryResult
+import com.typesafe.config.ConfigFactory
 
 /**
  */

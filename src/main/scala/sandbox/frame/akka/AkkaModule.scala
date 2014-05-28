@@ -1,10 +1,9 @@
-package sandbox.main
+package sandbox.frame.akka
 
 import net.codingwell.scalaguice.ScalaModule
 import akka.actor.{ActorRefFactory, ActorSystem}
 import javax.inject.{Provider, Singleton}
 import com.google.inject.{Provides, Injector}
-import sandbox.util.guice.GuiceAkkaExtension
 import scala.concurrent.ExecutionContext
 
 /**

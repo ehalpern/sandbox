@@ -1,4 +1,4 @@
-package sandbox.server
+package sandbox.frame.spray
 
 import akka.actor.{ActorSystem, ActorRef}
 import akka.io.IO

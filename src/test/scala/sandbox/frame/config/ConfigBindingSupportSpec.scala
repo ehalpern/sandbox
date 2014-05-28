@@ -1,9 +1,9 @@
-package sandbox.util.guice
+package sandbox.frame.config
 
 import scala.collection.JavaConversions._
 import org.scalatest.{Matchers, FunSpec}
 import com.google.inject.Guice
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.{ConfigFactory, Config}
 
 class ConfigBindingSupportSpec extends FunSpec with Matchers
 {

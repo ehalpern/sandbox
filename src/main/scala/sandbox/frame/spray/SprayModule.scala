@@ -1,21 +1,18 @@
-package sandbox.main
+package sandbox.frame.spray
 
 import net.codingwell.scalaguice.ScalaModule
-import sandbox.util.guice.GuiceAkkaExtension
-import sandbox.server.{Server, ApiRouterActor}
+import sandbox.frame.akka.GuiceAkkaExtension
 import com.google.inject.Provides
 import akka.actor.{ActorRef, ActorSystem}
 import javax.inject.{Named, Singleton}
-import sandbox.app.ApisModule
 
 /**
  * Adds HTTP server functionality and installs the ApisModule which registers
  * the REST APIs defined by the application.
  */
-class ServerModule extends ScalaModule
+class SprayModule extends ScalaModule
 {
   def configure {
-    install(new ApisModule)
     bind[Server]
   }
 

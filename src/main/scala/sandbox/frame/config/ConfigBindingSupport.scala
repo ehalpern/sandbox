@@ -1,4 +1,4 @@
-package sandbox.util.guice
+package sandbox.frame.config
 
 import net.codingwell.scalaguice.ScalaModule
 import com.typesafe.config.{ConfigValue, Config}

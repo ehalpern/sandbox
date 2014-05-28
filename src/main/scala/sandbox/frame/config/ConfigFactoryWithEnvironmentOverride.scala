@@ -1,4 +1,4 @@
-package sandbox.util.config
+package sandbox.frame.config
 
 import com.typesafe.config.{ ConfigFactory => TConfigFactory }
 

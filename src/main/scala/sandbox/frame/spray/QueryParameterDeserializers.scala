@@ -1,4 +1,4 @@
-package sandbox.util.spray
+package sandbox.frame.spray
 
 import spray.httpx.unmarshalling.{MalformedContent, Deserializer}
 

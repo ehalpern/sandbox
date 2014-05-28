@@ -1,8 +1,6 @@
-package sandbox.main
+package sandbox.frame.config
 
 import net.codingwell.scalaguice.ScalaModule
-import sandbox.util.guice.ConfigBindingSupport
-import sandbox.util.config.ConfigFactoryWithEnvironmentOverride
 import com.typesafe.config.Config
 
 /**

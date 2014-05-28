@@ -1,4 +1,4 @@
-package sandbox.server
+package sandbox.frame.spray
 
 import spray.routing._
 import akka.event.Logging

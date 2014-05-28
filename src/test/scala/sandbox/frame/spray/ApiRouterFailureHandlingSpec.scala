@@ -1,4 +1,4 @@
-package sandbox.server
+package sandbox.frame.spray
 
 import org.scalatest.{Matchers, WordSpec}
 import spray.testkit.ScalatestRouteTest

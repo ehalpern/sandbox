@@ -1,4 +1,4 @@
-package sandbox.server
+package sandbox.frame.spray
 
 import spray.routing.Directives
 import com.typesafe.scalalogging.slf4j.LazyLogging

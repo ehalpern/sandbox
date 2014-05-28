@@ -1,4 +1,4 @@
-package sandbox.server
+package sandbox.frame.spray
 
 /**
  * Exception that will translate to an http error response with a specific
