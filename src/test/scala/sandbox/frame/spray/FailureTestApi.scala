@@ -5,14 +5,14 @@ import com.typesafe.scalalogging.slf4j.LazyLogging
 import scala.concurrent.{Future, ExecutionContext}
 import spray.http.StatusCodes
 
-class FailureTestApi
+class FailureTestApi(implicit ec: ExecutionContext)
   extends ApiPlugin
   with Directives
   with LazyLogging
 {
   val service = new FailureTestService
 
-  def route(implicit ec: ExecutionContext) = {
+  def route = {
     path("echo") {
       get {
         parameter('msg) { (required) =>

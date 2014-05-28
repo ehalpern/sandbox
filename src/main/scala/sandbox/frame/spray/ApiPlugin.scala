@@ -5,5 +5,5 @@ import scala.concurrent.ExecutionContext
 
 trait ApiPlugin
 {
-  def route(implicit ec: ExecutionContext): Route
+  def route: Route
 }

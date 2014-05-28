@@ -4,7 +4,6 @@ import spray.routing.Directives
 
 import javax.inject.Inject
 import com.typesafe.scalalogging.slf4j.LazyLogging
-import scala.concurrent.ExecutionContext
 import sandbox.frame.spray.ApiPlugin
 
 class EchoApi @Inject()
@@ -12,7 +11,7 @@ class EchoApi @Inject()
   with Directives
   with LazyLogging
 {
-  def route(implicit ec: ExecutionContext) = {
+  def route = {
     path("echo") {
       get {
         parameter('msg) { (message) =>

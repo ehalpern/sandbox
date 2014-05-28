@@ -12,12 +12,14 @@ import org.json4s.ext.EnumNameSerializer
 
 class ClimateApi @Inject()(
   climateService: ClimateService
+) (
+  implicit ec: ExecutionContext
 ) extends Directives
   with ApiPlugin
   with LazyLogging
   with ClimateApiJsonSupport
 {
-  def route(implicit ec: ExecutionContext) = {
+  def route = {
     path("climate") {
       get {
         parameters('location, 'fromYear.as[Int], 'toYear.as[Int]) { (

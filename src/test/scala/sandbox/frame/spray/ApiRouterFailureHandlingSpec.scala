@@ -16,7 +16,7 @@ class ApiRouterFailureHandlingSpec
   override def actorRefFactory = system
 
   override def apis: Seq[ApiPlugin] = {
-    Seq(new FailureTestApi)
+    Seq(new FailureTestApi()(executionContext))
   }
 
   "GET'ting a resource" should {
