@@ -14,7 +14,8 @@ class ClimateApi @Inject()(
   climateService: ClimateService
 ) (
   implicit ec: ExecutionContext
-) extends Directives
+)
+extends Directives
   with ApiPlugin
   with LazyLogging
   with ClimateApiJsonSupport

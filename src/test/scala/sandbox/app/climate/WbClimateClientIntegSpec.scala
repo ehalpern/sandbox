@@ -1,20 +1,14 @@
 package sandbox.app.climate
 
 import org.scalatest.{WordSpec, Matchers}
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import akka.actor.ActorSystem
+import sandbox.IntegTestSupport
 
-class WbClimateClientSpec extends WordSpec
+class WbClimateClientIntegSpec extends WordSpec
   with Matchers
-  with ScalaFutures
-  with IntegrationPatience // increase request timeouts
+  with IntegTestSupport
   with WbClimateClient.JsonProtocol
 {
-  val api = new WbClimateClient(
-    "http://climatedataapi.worldbank.org/climateweb/rest/v1"
-  )(
-    ActorSystem("test")
-  )
+  val api = inject[WbClimateClient]
 
   "fetchTemperatureStats" should {
     "return stats" when {

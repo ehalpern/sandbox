@@ -25,12 +25,7 @@ trait ApiRouter extends HttpService with LazyLogging
    */
   protected[this] def apis: Seq[ApiPlugin]
 
-  // Use the enclosing actor's dispatcher
-  protected[this] implicit def executionContext = {
-    actorRefFactory.dispatcher
-  }
-
-  protected[this] lazy val standardRoute =
+  /*protected[spray]*/ lazy val standardRoute =
     logRequestResponse("MARK", Logging.InfoLevel) {
       handleRejections(rejectionHandler) {
         handleExceptions(exceptionHandler) {

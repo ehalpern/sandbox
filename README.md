@@ -1,10 +1,20 @@
-# A Light Scala Application Framework
-Builds on well-designed, widely used scala/jvm libraries to provide what is, hopefully,  
-a simple, un-intrusive framework for building pragmatic, production quality server applications.
+# twine - A Light Scala Application Framework
 
-Much of it's simplicity is a result of opinionated choices about how to address some of the basic 
-organizational and wiring problems that every significant application faces.
+Twine is a lightweight scala framework for building production ready REST like services.
+It employs a core of high-quality, well-used, scala/jvm libraries to tackle for configuration
+(Typesafe Config), modular construction (Google Guice), resilient concurrency and
+distribution (Akka) and asynchronous HTTP services (Spray).
 
+The goal is to integrate and get out of the way.  Twine attempts to solve several 
+of the background structural problems that are often neglected when piecing together 
+a system out of libraries.  These include:
+
+  - A simple system for handling, evolving and externalizing configuration based
+    on typesafe Config
+  - How to maintain a modular codebase with Guice
+  - How to test akka actors and spray routes with minimal hassle
+  - How to build end-to-end asynchronous services using akka and spray
+ 
 ## Asynchronous HTTP Server
 ## Asynchronous Services
 ## Configuration & Dependency Injection
@@ -12,8 +22,7 @@ organizational and wiring problems that every significant application faces.
 ### Unit & Integration Tests
 ### Performance Tests
 ### Load and Stress Tests
-## Logging
-## Metrics
+##   Metrics
 ## Work Management
 
 

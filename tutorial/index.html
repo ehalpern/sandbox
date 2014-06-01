@@ -5,31 +5,57 @@
 <body>
 
 <div>
-  <h2>Intro to Frame</h2>
+  <h2>Config, Guice, Akka and Spray</h2>
   <p>
-    Frame is a lightweight scala framework for building production ready REST like services.
-    It orchestrates a core of widely-used, high-quality libraries for configuration
-    (Typesafe Config), modular construction (Google Guice), resilient concurrency and
-    distribution (Akka) and asynchronous HTTP services (Spray).
-  </p>
-  <p>
-    The goal is to provide a minimal (yet sufficient) integration between these components
-    so that they work well together but are not hidden.  If you are using Frame you are using
-    Spray and Akka.  Frame attempts to solve the little problems around the edges like how to
-    manage external configuration, how to maintain a modular codebase, simplifying the testing
-    of akka and spray routing services, etc.
+    Presents a light framework for building end-to-end async REST services in a simple,
+    modular, testable fashion using Typesafe Config, Guice, Akka and Spray.  The goal
+    of this tutorial is to show a particular way to use these libraries together to
+    build a an extensible application.
   </p>
 </div>
-
-<div>
-  <h2>Run the Example App and the Tests</h2>
+  <h2>Configuration and Dependency Injection</h2>
   <p>
+    This framework employs Guice dependency injection to modularize the system for
+    clean extension and isolated testing.  Guice is an excellent, lightweight
+    implementation of the Java dependency injection standard JSR330.
+  </p>
+  <p>
+    The bindings of implementations (and config values) to be injected are specified in code
+    using Module's (which we'll explore later).
+  </p>
+  <p>
+    You can make a service class injectable simply declaring all its dependencies as
+    constructor arguments, and preceding the constructor argument list with the @Inject()
+    annotation.
+    The <a href="#code/src/main/app/climate/ClimateApi.scala" class="shortcut">ClimateApi</a>
+    class uses this technique so that Guice can construct it with the appropriate implementation
+    of ClimateService.
+  </p>
+  <p>
+    You can also include configuration properties to be injected in the constructor argument list.
+    To do this, just annotate the argument with @Named("<b>config-key</b>") so that Guice
+    knows what property to inject.  The
+    <a href="#code/src/main/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
+    uses this technique to inject the
+    <a href="#code/conf/application.conf" class="shortcut">wbclimate.api.endpoint</a>.
+  </p>
+  <p>
+    Dependency injection also helps simplify managing key implicit parameters.  We bind the
+    Akka ActorSystem, ActorRefFactory and the ExecutionContext so these can simply be injected
+    into any class that requires them rather than propagating these arguments through the
+    call stack.
+    The <a href="#code/src/main/app/climate/ClimateApi.scala" class="shortcut">ClimateApi</a>
+    class uses this technique to obtain the ExecutionContext.
+    The
+    <a href="#code/src/main/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
+    class uses this technique to inject the ActorRefFactory.
   </p>
 </div>
 
 <div>
   <h2>Adding a Simple API Component</h2>
   <p>
+
   </p>
 </div>
 

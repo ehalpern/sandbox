@@ -3,20 +3,18 @@ package sandbox.frame.spray
 import org.scalatest.{Matchers, WordSpec}
 import spray.testkit.ScalatestRouteTest
 import spray.http.StatusCodes
-import com.typesafe.scalalogging.slf4j.LazyLogging
 
 /**
  */
-class ApiRouterFailureHandlingSpec
-  extends WordSpec
+class ApiRouterFailureHandlingSpec extends WordSpec
+  with Matchers
   with ApiRouter
   with ScalatestRouteTest
-  with Matchers
 {
   override def actorRefFactory = system
 
   override def apis: Seq[ApiPlugin] = {
-    Seq(new FailureTestApi()(executionContext))
+    Seq(new FailureTestApi()(executor))
   }
 
   "GET'ting a resource" should {
