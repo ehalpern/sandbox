@@ -7,12 +7,11 @@ organization := "sandbox"
 scalaVersion := "2.11.0"
 
 // Add external conf directory to the classpath
-unmanagedClasspath in Runtime += baseDirectory.value / "conf"
-
 unmanagedClasspath in Test += baseDirectory.value / "conf"
 
 unmanagedClasspath in IntegTest += baseDirectory.value / "conf"
 
+unmanagedClasspath in Runtime += baseDirectory.value / "conf"
 
 resolvers ++= Seq(
   "typesafe.com" at "http://repo.typesafe.com/typesafe/repo/",
@@ -49,8 +48,7 @@ resolvers ++= Seq(
     //-------------------------------------------------------------------------
     "com.typesafe.akka" %% "akka-testkit" % AkkaVersion % "test",
     "io.spray" %% "spray-testkit" % SprayVersion % "test",
-    "org.scalatest" %% "scalatest" % ScalaTestVersion % "test",
-    "org.scalamock" %% "scalamock-core" % ScalaMockVersion % "test",
-    "org.scalamock" %% "scalamock-scalatest-support" % ScalaMockVersion % "test"
+    "org.mockito" % "mockito-core" % "1.9.5" % "test",
+    "org.scalatest" %% "scalatest" % ScalaTestVersion % "test"
   )
 }

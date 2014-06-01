@@ -1,15 +1,12 @@
 package sandbox.app.echo
 
-import org.scalatest.WordSpec
-import spray.testkit.ScalatestRouteTest
+import sandbox.UnitTestSpec
 
 /**
+ * Test the EchoApi in isolation.
  */
-class EchoApiSpec extends WordSpec
-  with ScalatestRouteTest
+class EchoApiSpec extends UnitTestSpec
 {
-  def actorRefFactory = system
-
   val route = (new EchoApi).route
 
   "GET /echo?msg=foo" should {

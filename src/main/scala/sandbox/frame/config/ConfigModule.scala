@@ -1,7 +1,8 @@
 package sandbox.frame.config
 
 import net.codingwell.scalaguice.ScalaModule
-import com.typesafe.config.Config
+import com.typesafe.config.{ConfigRenderOptions, Config}
+import com.typesafe.scalalogging.slf4j.LazyLogging
 
 /**
  * Loads the typesafe configuration and binds each config key to a ''@Named("<key>"''
@@ -31,10 +32,12 @@ import com.typesafe.config.Config
  * }
  * }}}
  */
-class ConfigModule extends ScalaModule with ConfigBindingSupport
+class ConfigModule extends ScalaModule with ConfigBindingSupport with LazyLogging
  {
    def configure {
+     //System.setProperty("config.trace", "loads")
      val config = ConfigFactoryWithEnvironmentOverride.load
+     logger.debug(config.root.render(ConfigRenderOptions.concise.setFormatted(true)))
      bind[Config].toInstance(config)
      bindConfig(config)
    }

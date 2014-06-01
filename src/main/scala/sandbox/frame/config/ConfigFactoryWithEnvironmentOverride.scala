@@ -1,17 +1,17 @@
 package sandbox.frame.config
 
 import com.typesafe.config.{ ConfigFactory => TConfigFactory }
+import com.typesafe.scalalogging.slf4j.LazyLogging
 
 object ConfigFactoryWithEnvironmentOverride extends ConfigFactoryWithEnvironmentOverride
 
-class ConfigFactoryWithEnvironmentOverride
+class ConfigFactoryWithEnvironmentOverride extends LazyLogging
 {
   private lazy val config = {
     // Load environment specific config ${env}.conf falling back to the default
     // application.conf (and references.conf(s) if they exist in classpath.  This
     // allows ${env}.conf to specify environment specific overrides of the base
     // configuration.
-    System.setProperty("config.trace", "loads")
     val standard = TConfigFactory.load()
     val env = standard.getString("env")
     val custom = TConfigFactory.parseResourcesAnySyntax(standard.getString("env"))

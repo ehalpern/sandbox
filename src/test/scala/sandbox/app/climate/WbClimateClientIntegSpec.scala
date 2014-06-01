@@ -1,11 +1,8 @@
 package sandbox.app.climate
 
-import org.scalatest.{WordSpec, Matchers}
-import sandbox.IntegTestSupport
+import sandbox.IntegTestSpec
 
-class WbClimateClientIntegSpec extends WordSpec
-  with Matchers
-  with IntegTestSupport
+class WbClimateClientIntegSpec extends IntegTestSpec
   with WbClimateClient.JsonProtocol
 {
   val api = inject[WbClimateClient]

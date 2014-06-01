@@ -7,7 +7,7 @@ import org.json4s.{DefaultFormats, Formats}
 import spray.http._
 import spray.client.pipelining._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import sandbox.app.climate.WbClimateClient.Data
 import akka.actor.ActorRefFactory
@@ -30,12 +30,21 @@ object WbClimateClient {
   }
 }
 
-private[climate] class WbClimateClient @Inject()(
+trait WbClimateClient {
+  def fetchTemperatureStats(country: String, fromYear: Int, toYear: Int)
+  : Future[Seq[Data]]
+
+  def fetchPrecipitationStats(country: String, fromYear: Int, toYear: Int)
+  : Future[Seq[Data]]
+}
+
+class WbClimateClientImpl @Inject()(
   @Named("climate.api.endpoint") endpoint: String
 ) (
   implicit af: ActorRefFactory
 )
-  extends WbClimateClient.JsonProtocol
+extends WbClimateClient
+  with WbClimateClient.JsonProtocol
   with LazyLogging
 {
   private implicit val ec = af.dispatcher

@@ -20,8 +20,8 @@ case class ClimateStats(
   location: String,
   formYear: Int,
   toYear: Int,
-  temperature: Option[Temperature],
-  precipitation: Option[Precipitation]
+  temperature: Option[Temperature] = None,
+  precipitation: Option[Precipitation] = None
 )
 object ClimateStats {
   def fromData(

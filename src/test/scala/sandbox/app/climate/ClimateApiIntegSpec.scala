@@ -1,15 +1,12 @@
 package sandbox.app.climate
 
-import org.scalatest.{Matchers, WordSpec}
-import sandbox.IntegTestSupport
+import sandbox.IntegTestSpec
 import spray.http.StatusCodes
 import sandbox.app.climate.model.ClimateQueryResult
 
 /**
  */
-class ClimateApiIntegSpec extends WordSpec
-  with Matchers
-  with IntegTestSupport
+class ClimateApiIntegSpec extends IntegTestSpec
   with ClimateApiJsonSupport
 {
   "GET /climate" should {
@@ -17,7 +14,8 @@ class ClimateApiIntegSpec extends WordSpec
       "given a valid location and range" in {
         Get("/climate?location=FJI&fromYear=1980&toYear=1999") ~> route ~> check {
           status should be(StatusCodes.OK)
-          entityAs[ClimateQueryResult].list should be('nonEmpty)
+          val result = entityAs[ClimateQueryResult]
+          result.list should be('nonEmpty)
         }
       }
     }
