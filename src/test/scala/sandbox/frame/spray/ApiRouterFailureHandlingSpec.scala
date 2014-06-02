@@ -3,11 +3,11 @@ package sandbox.frame.spray
 import org.scalatest.{Matchers, WordSpec}
 import spray.testkit.ScalatestRouteTest
 import spray.http.StatusCodes
+import sandbox.StandardSpec
 
 /**
  */
-class ApiRouterFailureHandlingSpec extends WordSpec
-  with Matchers
+class ApiRouterFailureHandlingSpec extends StandardSpec
   with ApiRouter
   with ScalatestRouteTest
 {

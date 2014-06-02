@@ -1,42 +1,34 @@
 package sandbox
 
 import akka.actor.ActorRefFactory
-import com.google.inject.Provides
+import com.google.inject.{Guice, Key, Provides}
 import net.codingwell.scalaguice.ScalaModule
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.{Matchers, WordSpec}
-import sandbox.frame.spray.{ApiPlugin, ApiRouter}
+import sandbox.frame.spray.{ApiRouter, ApiPlugin}
 import scala.concurrent.duration._
-import spray.testkit.ScalatestRouteTest
+import scala.reflect._
+import org.scalatest.concurrent.IntegrationPatience
+import spray.routing.HttpService
 
 /**
- * Standard base for integration tests.
- *
- * Tests extending this class will inherit the following features:
- *   - WordSpec style tests with Matcher DSL for assertions
- *   - Support for testing Futures including the useful whenReady construct
- *   - Support for testing spray Routes
- *   - Longer future and spray times since services we're using
+ * Extends StandardSpec with features to aid in integration testing including:
+ *   - Longer future and spray timeouts since services we're using
  *     real remote services
- *   - Defines implicits required for future, akka and spray route testing
+ *   - Implicits required for future, akka and spray route testing
  *   - Access to all of the applications apis and services (which
  *     are created using dependency injection).  You can write an api
  *     tests against any api defined by the app without additional wiring.
  *     You can also obtain any arbitrary service using
  *     {{{ val service = inject[ServiceInterface]}}}.
  */
-class IntegTestSpec extends WordSpec
-  with Matchers
-  with ScalaFutures
-  with ScalatestRouteTest
-  with IntegrationPatience
-  with TestInjector
+trait IntegTestSupport extends IntegrationPatience
 {
+  suite: StandardSpec =>
+
   /**
    * Install everything
    */
-  final override protected[this] def bindings = new ScalaModule {
-    def configure() = {
+  private val injector = Guice.createInjector(new ScalaModule {
+    override def configure() {
       install(new MainModule)
     }
 
@@ -51,17 +43,28 @@ class IntegTestSpec extends WordSpec
         protected[this] def apis = apiSet.toSeq
       }
     }
+  })
+
+  protected[this] def inject[A <: AnyRef : ClassTag]: A = {
+    injector.getInstance(classTag[A].runtimeClass).asInstanceOf[A]
+  }
+
+  protected[this] def inject[A <: AnyRef](key: Key[A]): A = {
+    injector.getInstance(key)
   }
 
   /**
    * Route spray route to be used for api testing
    */
-  protected[this] val route = inject[ApiRouter].standardRoute
+  protected[this] def route = {
+    val router = inject[ApiRouter]
+    router.sealRoute(router.standardRoute)
+  }
 
   /**
    * Increase timeout for routing tests since they may depend on external
    * services.
    */
-  protected[this] implicit val routeTestTimeout = RouteTestTimeout(15 seconds)
+  protected[this] implicit val routeTestTimeout = RouteTestTimeout(15.seconds)
 }
 

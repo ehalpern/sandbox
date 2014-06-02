@@ -21,9 +21,16 @@ object WbClimateClient {
     variable: String,
     fromYear: Int,
     toYear: Int,
-    annualData: Option[Seq[Double]],
-    monthlyData: Option[Seq[Double]]
+    annualData: Option[Seq[Double]]
   )
+
+  def testTemperatureData(fromYear: Int, toYear: Int) = {
+    Data("tas", "annualavg", fromYear, toYear, Some(Seq(15.0)))
+  }
+
+  def testPrecipitationData(fromYear: Int, toYear: Int) = {
+    Data("pr", "annualavg", fromYear, toYear, Some(Seq(100.0)))
+  }
 
   trait JsonProtocol extends Json4sJacksonSupport {
     override implicit def json4sJacksonFormats: Formats = DefaultFormats

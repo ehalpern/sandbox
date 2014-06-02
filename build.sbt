@@ -6,6 +6,8 @@ organization := "sandbox"
 
 scalaVersion := "2.11.0"
 
+scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
+
 // Add external conf directory to the classpath
 unmanagedClasspath in Test += baseDirectory.value / "conf"
 
@@ -26,7 +28,6 @@ resolvers ++= Seq(
   val Log4jVersion = "2.0-rc1"
   val SprayVersion = "1.3.1-20140423"
   val ScalaTestVersion = "2.1.4"
-  val ScalaMockVersion = "3.1.1"
   libraryDependencies ++= Seq(
     "com.etaty.rediscala" %% "rediscala" % "1.3.1",
     "com.github.scopt" %% "scopt" % "3.2.0",

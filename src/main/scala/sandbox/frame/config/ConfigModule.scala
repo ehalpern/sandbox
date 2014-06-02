@@ -37,7 +37,7 @@ class ConfigModule extends ScalaModule with ConfigBindingSupport with LazyLoggin
    def configure {
      //System.setProperty("config.trace", "loads")
      val config = ConfigFactoryWithEnvironmentOverride.load
-     logger.debug(config.root.render(ConfigRenderOptions.concise.setFormatted(true)))
+     logger.trace(s"${config.root.render(ConfigRenderOptions.concise.setFormatted(true))}")
      bind[Config].toInstance(config)
      bindConfig(config)
    }

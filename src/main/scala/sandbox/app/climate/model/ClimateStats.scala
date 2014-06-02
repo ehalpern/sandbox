@@ -18,7 +18,7 @@ import PrecipitationUnit._
  */
 case class ClimateStats(
   location: String,
-  formYear: Int,
+  fromYear: Int,
   toYear: Int,
   temperature: Option[Temperature] = None,
   precipitation: Option[Precipitation] = None
@@ -49,7 +49,7 @@ object Temperature {
       case list if list.nonEmpty =>
         Some(Temperature(
           Celsius,
-          list.head.monthlyData.getOrElse(Seq()),
+          Seq(),
           list.head.annualData match {
             case Some(list) => list.head
             case None => -1.0
@@ -71,7 +71,7 @@ object Precipitation {
       case list if list.nonEmpty =>
         Some(Precipitation(
           Centimeters,
-          list.head.monthlyData.getOrElse(Seq()),
+          Seq(),
           list.head.annualData match {
             case Some(list) => list.head
             case None => -1.0
