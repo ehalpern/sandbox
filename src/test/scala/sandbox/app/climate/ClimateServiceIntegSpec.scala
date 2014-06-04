@@ -13,5 +13,5 @@ class ClimateServiceIntegSpec extends ClimateServiceSpec with IntegTestSupport
    * behavior in the unit test that instantiates the service directly with
    * mock dependencies
    */
-  override def climateService = inject[ClimateService]
+  override def climateService = getInstance[ClimateService]
 }

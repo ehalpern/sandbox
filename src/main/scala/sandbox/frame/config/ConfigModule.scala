@@ -35,7 +35,6 @@ import com.typesafe.scalalogging.slf4j.LazyLogging
 class ConfigModule extends ScalaModule with ConfigBindingSupport with LazyLogging
  {
    def configure {
-     //System.setProperty("config.trace", "loads")
      val config = ConfigFactoryWithEnvironmentOverride.load
      logger.trace(s"${config.root.render(ConfigRenderOptions.concise.setFormatted(true))}")
      bind[Config].toInstance(config)

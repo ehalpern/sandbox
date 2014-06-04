@@ -7,10 +7,23 @@
 <div>
   <h2>Config, Guice, Akka and Spray</h2>
   <p>
-    Presents a light framework for building end-to-end async REST services in a simple,
-    modular, testable fashion using Typesafe Config, Guice, Akka and Spray.  The goal
-    of this tutorial is to show a particular way to use these libraries together to
-    build a an extensible application.
+    Presents a light framework for building end-to-end reactive REST services in a simple,
+    modular, testable fashion using Typesafe Config, Guice, Akka and Spray.  This tutorial
+    will demonstrate:
+    <ul>
+      <li>
+        How to use dependency injection (using Guice) in a real spray application to modularize,
+        simplify testing, and tidy up implicit value propagation.
+      </li>
+      <li>
+        How to inject (Typesafe) configuration properties to remove boilerplate configuration
+        code.
+      </li>
+      <li>
+        How to use this structure to build and test a reactive REST service (that itself
+        relies on an external REST API).
+      </li>
+    </ul>
   </p>
 </div>
   <h2>Configuration and Dependency Injection</h2>
