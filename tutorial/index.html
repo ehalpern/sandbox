@@ -6,67 +6,164 @@
 
 <div>
   <h2>Config, Guice, Akka and Spray</h2>
+
   <p>
-    Presents a light framework for building end-to-end reactive REST services in a simple,
-    modular, testable fashion using Typesafe Config, Guice, Akka and Spray.  This tutorial
-    will demonstrate:
-    <ul>
-      <li>
-        How to use dependency injection (using Guice) in a real spray application to modularize,
-        simplify testing, and tidy up implicit value propagation.
-      </li>
-      <li>
-        How to inject (Typesafe) configuration properties to remove boilerplate configuration
-        code.
-      </li>
-      <li>
-        How to use this structure to build and test a reactive REST service (that itself
-        relies on an external REST API).
-      </li>
-    </ul>
+    Presents a light framework for building reactive REST services in a modular,
+    testable fashion using Typesafe Config, Guice, Akka and Spray.
+  </p>
+
+  <p>
+    This tutorial will demonstrate:
+  <ul>
+    <li>
+      How to use dependency injection to simplify and modularize code (and tame implicits)
+    </li>
+    <li>
+      How to inject configuration properties to avoid boilerplate configuration code
+    </li>
+    <li>
+      How to use this structure to build and test a complete, reactive REST service
+    </li>
+  </ul>
+  </p>
+  <p>
+    Along the way, you will also see:
+  <ul>
+    <li>How to integrate Guice with Akka and Spray</li>
+    <li>How to use Json4s for typesafe json marshalling/unmarshalling</li>
+    <li>How easily build unit and integration tests for these services</li>
+  </ul>
   </p>
 </div>
-  <h2>Configuration and Dependency Injection</h2>
+<div>
+  <h2>Dependency Injection (DI)</h2>
+
   <p>
-    This framework employs Guice dependency injection to modularize the system for
-    clean extension and isolated testing.  Guice is an excellent, lightweight
-    implementation of the Java dependency injection standard JSR330.
+    Dependency injection provides a simple, concise way to wire applications together.
+    It removes most of the need for new, factories and singletons which all tend to
+    complicate code and interfere with modularity.
+  </p>
+
+  <p>
+    When you use a dependency injection system, each implementation class can simply
+    declare its dependencies in its constructor and rely on the system to instantiate
+    it correctly.
+  </p>
+
+  <p>
+    The <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">ClimateServiceImpl</a>
+    class provides a simple example. It declares two dependencies:
+  <ul>
+    <li>
+      a <a href="#code/src/main/scala/sandbox/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
+      which it uses to access World Bank climate data.
+    </li>
+    <li>
+      An implicit ExecutionContext which it uses to execute an async requests
+    </li>
+  </ul>
+  The DI system will provide both of these automatically when it instantiates the service.
   </p>
   <p>
-    The bindings of implementations (and config values) to be injected are specified in code
-    using Module's (which we'll explore later).
+    Noticed the ugly @Inject() annotation? Guice (and JSR 330) requires this to mark all
+    constructors that are are candidates for injection.
   </p>
+</div>
+<div>
+  <h2>Configuration Injection</h2>
+
   <p>
-    You can make a service class injectable simply declaring all its dependencies as
-    constructor arguments, and preceding the constructor argument list with the @Inject()
-    annotation.
-    The <a href="#code/src/main/app/climate/ClimateApi.scala" class="shortcut">ClimateApi</a>
-    class uses this technique so that Guice can construct it with the appropriate implementation
-    of ClimateService.
+    An implementation may also require configuration, and we can use DI for this too.
   </p>
+
   <p>
-    You can also include configuration properties to be injected in the constructor argument list.
-    To do this, just annotate the argument with @Named("<b>config-key</b>") so that Guice
-    knows what property to inject.  The
-    <a href="#code/src/main/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
-    uses this technique to inject the
-    <a href="#code/conf/application.conf" class="shortcut">wbclimate.api.endpoint</a>.
+    <a href="#code/src/main/scala/sandbox/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClientImpl</a>
+    provides an example.
   </p>
+
   <p>
-    Dependency injection also helps simplify managing key implicit parameters.  We bind the
+    It declares an <code>endpoint</code> which it uses to contact the remote API. It annotates
+    <code>endpoint</code> with <code>@Named("wbclient.endpoint")</code> to tell the DI system that
+    it should be injected with the "wbclient.endpoint" configuration property which is defined
+    in the <a href="#code/conf/application.conf" class="shortcut">application.conf</a> file
+  </p>
+
+  <p>
+    The <code>@Named</code> annotation qualifies a dependency that cannot be
+    identified by its type alone. During DI system initialization, we load a special
+    <a href="#code/src/main/scala/sandbox/frame/config/ConfigModule.scala" class="shortcut">ConfigModule</a>
+    that reads the Typesafe configuration and binds each property value to a <code>@Named("[config-key]")</code>
+    annotation. This makes all config properties available for injection.
+  </p>
+</div>
+<div>
+  <h2>Modules and Bindings</h2>
+
+  <p>
+    The application is composed of a set of modules with each defining a logical subsystem
+    and the bindings required to implement it. These modules are installed in dependency
+    order by the
+    <a href="#code/src/main/scala/sandbox/MainModule.scala" class="shortcut">MainModule</a>
+  </p>
+
+  <p>
+    The MainModule does the following:
+  <ol>
+    <li>
+      Installs ConfigModule which reads loads the Typesafe config and creates a @Named
+      binding for every configuration property
+    </li>
+    <li>
+      Installs AkkaModule which
+      <ul>
+        <li>initializes the Akka system</li>
+        <li>registers an AkkaExtension that enables Akka to create Guice injected actors</li>
+        <li>binds the AkkaRefFactory and ExecutionContext so they're available for injection</li>
+      </ul>
+    </li>
+    <li>
+      Installs the ServicesModule which installs all application services
+    </li>
+    <li>
+      Installs the SprayModule which adds an HttpService and creates the actor that will
+      receive and process requests.
+    </li>
+    <li>
+      Installs the ApisModule which registers all REST APIs.
+    </li>
+  </ol>
+  </p>
+</div>
+<div>
+  </p>
+  loads each of these modules in dependent order to start the system.
+  defines a logical subsystem and defines the bindings required to implement that subsystem.
+  The
+  for that piece. DI system bindings are defined in a set of Modules. Each module represents a logical piece of
+  the application, and these modules can be composed to create a building
+  block of the larger composable
+  component of
+  the system and responsible for defining the bindings for that component. is initialized with implementation bindings.
+  . The bindings of implementations (and config values) to be injected are specified in code
+  using Module's (which we'll explore later).
+  </p>
+
+  <p>
+    Dependency injection also helps simplify managing key implicit parameters. We bind the
     Akka ActorSystem, ActorRefFactory and the ExecutionContext so these can simply be injected
     into any class that requires them rather than propagating these arguments through the
     call stack.
-    The <a href="#code/src/main/app/climate/ClimateApi.scala" class="shortcut">ClimateApi</a>
+    The <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi.scala" class="shortcut">ClimateApi</a>
     class uses this technique to obtain the ExecutionContext.
     The
-    <a href="#code/src/main/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
+    <a href="#code/src/main/scala/sandbox/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
     class uses this technique to inject the ActorRefFactory.
   </p>
 </div>
 
 <div>
   <h2>Adding a Simple API Component</h2>
+
   <p>
 
   </p>
@@ -74,30 +171,35 @@
 
 <div>
   <h2>Adding a Complete Service</h2>
+
   <p>
   </p>
 </div>
 
 <div>
   <h2>Combining Configuration & Dependency Injection</h2>
+
   <p>
   </p>
 </div>
 
 <div>
   <h2>Understanding Dependency Injection with Akka</h2>
+
   <p>
   </p>
 </div>
 
 <div>
   <h2>Testing REST APIs</h2>
+
   <p>
   </p>
 </div>
 
 <div>
   <h2>Testing Asynchronous Services</h2>
+
   <p>
   </p>
   </p>
@@ -105,12 +207,14 @@
 
 <div>
   <h2>Integration Testing</h2>
+
   <p>
   </p>
 </div>
 
 <div>
   <h2>Next Steps</h2>
+
   <p>
   </p>
 </div>

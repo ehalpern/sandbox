@@ -2,6 +2,7 @@ package sandbox
 
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Matchers, WordSpec}
+import scala.concurrent.duration._
 import spray.testkit.ScalatestRouteTest
 
 /**
@@ -17,4 +18,9 @@ class StandardSpec extends WordSpec
   with Matchers
   with ScalaFutures
   with ScalatestRouteTest
+{
+  protected implicit def routeTestTimeout = {
+    RouteTestTimeout(1.seconds)
+  }
+}
 

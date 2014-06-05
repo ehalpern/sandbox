@@ -10,12 +10,16 @@ class MainModule extends ScalaModule
 {
   override def configure() {
     installCore
+    installServices
     installServer
   }
 
   private def installCore() {
     install(new ConfigModule)
     install(new AkkaModule)
+  }
+
+  private def installServices() {
     install(new ServicesModule)
   }
 

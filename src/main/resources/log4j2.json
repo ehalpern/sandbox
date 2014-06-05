@@ -18,7 +18,8 @@
     "loggers": {
       "root": { "level": "debug", "appender-ref": { "ref":"Console" }},
       "logger": [
-        { "name": "akka", "level": "info" }
+        { "name": "akka", "level": "info" },
+        { "name": "spray", "level": "info" }
       ]
     }
   }

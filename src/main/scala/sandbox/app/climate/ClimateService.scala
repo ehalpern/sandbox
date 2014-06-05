@@ -4,6 +4,7 @@ import javax.inject.Inject
 import scala.concurrent._
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import sandbox.app.climate.model.{ClimateStats, ClimateQueryResult}
+import sandbox.app.climate.wbclimate.WbClimateClient
 
 /**
  */
@@ -12,12 +13,9 @@ trait ClimateService {
   : Future[ClimateQueryResult]
 }
 
-class ClimateServiceImpl @Inject()(
-  wbClient: WbClimateClient
-)(
-  implicit ec: ExecutionContext
-)
-extends ClimateService with LazyLogging
+class ClimateServiceImpl @Inject()(wbClient: WbClimateClient)
+                                  (implicit ec: ExecutionContext)
+  extends ClimateService with LazyLogging
 {
   def query(location: String, fromYear: Int, toYear: Int)
   = {

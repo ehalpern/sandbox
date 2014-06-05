@@ -3,6 +3,7 @@ package sandbox.app.climate
 import org.mockito.Mockito._
 import sandbox.{UnitTestSupport, StandardSpec}
 import scala.concurrent.Future
+import sandbox.app.climate.wbclimate.{WbClimateData, WbClimateClient}
 
 /**
  */
@@ -13,19 +14,19 @@ class ClimateServiceSpec extends StandardSpec with UnitTestSupport
   val TestLocation = "FJI"
 
   /**
-   * Create the climateService manually and inject use a mock WbClimateClient
+   * Create the climateService manually and use a mock WbClimateClient
    * instead of the real one.  Note that this is a method so that it can be
-   * overridden by the ClimateServiceIntegSpec which extends this class to reuse
-   * the reuse these test during integration testing
+   * overridden by the ClimateServiceIntegSpec which extends this class to
+   * reuse for integration testing
    */
   def climateService: ClimateService = {
     val mockClient = mock[WbClimateClient]
 
     when(mockClient.fetchPrecipitationStats(TestLocation, TestFromYear, TestToYear)).thenReturn(
-      Future(Seq(WbClimateClient.testPrecipitationData(TestFromYear, TestToYear)))
+      Future(Seq(WbClimateData.dummyPrecipitationData(TestFromYear, TestToYear)))
     )
     when(mockClient.fetchTemperatureStats(TestLocation, TestFromYear, TestToYear)).thenReturn(
-      Future(Seq(WbClimateClient.testTemperatureData(TestFromYear, TestToYear)))
+      Future(Seq(WbClimateData.dummyTemperatureData(TestFromYear, TestToYear)))
     )
     new ClimateServiceImpl(mockClient)
   }

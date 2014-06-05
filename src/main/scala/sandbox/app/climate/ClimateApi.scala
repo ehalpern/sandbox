@@ -10,12 +10,9 @@ import spray.httpx.Json4sJacksonSupport
 import org.json4s.{Formats, DefaultFormats}
 import org.json4s.ext.EnumNameSerializer
 
-class ClimateApi @Inject()(
-  climateService: ClimateService
-) (
-  implicit ec: ExecutionContext
-)
-extends Directives
+class ClimateApi @Inject()(climateService: ClimateService)
+                          (implicit ec: ExecutionContext)
+  extends Directives
   with ApiPlugin
   with LazyLogging
   with ClimateApiJsonSupport

@@ -5,6 +5,8 @@ import sandbox.app.climate.model.ClimateQueryResult
 import sandbox.{UnitTestSupport, StandardSpec}
 import scala.concurrent.Future
 import spray.http.StatusCodes
+import scala.concurrent.duration._
+
 
 /**
  * ClimateApi unit tests.

@@ -1,6 +1,6 @@
 package sandbox.app.climate.model
 
-import sandbox.app.climate.WbClimateClient.Data
+import sandbox.app.climate.wbclimate.WbClimateData
 
 object TemperatureUnit extends Enumeration {
   type TemperatureUnit = Value
@@ -28,8 +28,8 @@ object ClimateStats {
   def fromData(
     location: String,
     fromYear: Int, toYear: Int,
-    tempData: Seq[Data],
-    precipitationData: Seq[Data]
+    tempData: Seq[WbClimateData],
+    precipitationData: Seq[WbClimateData]
   ) = {
     ClimateStats(
       location, fromYear, toYear,
@@ -45,7 +45,7 @@ case class Temperature(
   annual: Double
 )
 object Temperature {
-  def fromData(data: Seq[Data]) = {
+  def fromData(data: Seq[WbClimateData]) = {
     data match {
       case list if list.nonEmpty =>
         Some(Temperature(
@@ -67,7 +67,7 @@ case class Precipitation(
  annual: Double
 )
 object Precipitation {
-  def fromData(data: Seq[Data]) = {
+  def fromData(data: Seq[WbClimateData]) = {
     data match {
       case list if list.nonEmpty =>
         Some(Precipitation(

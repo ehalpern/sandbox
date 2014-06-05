@@ -23,7 +23,8 @@ import scala.reflect._
  *     times associated with using real remote services
  *
  */
-trait IntegTestSupport extends IntegrationPatience {
+trait IntegTestSupport extends IntegrationPatience
+{
   suite: StandardSpec =>
 
   /**
@@ -52,7 +53,7 @@ trait IntegTestSupport extends IntegrationPatience {
   /**
    * Increases the default timeout for routing tests
    */
-  protected[this] implicit val routeTestTimeout = {
+  override implicit protected def routeTestTimeout: RouteTestTimeout = {
     RouteTestTimeout(15.seconds)
   }
 
