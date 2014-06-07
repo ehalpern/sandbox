@@ -4,7 +4,7 @@ version := "SNAPSHOT"
 
 organization := "sandbox"
 
-scalaVersion := "2.11.1"
+scalaVersion := "2.11.0"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
@@ -30,6 +30,7 @@ resolvers ++= Seq(
   val ScalaTestVersion = "2.1.4"
   libraryDependencies ++= Seq(
     "com.github.scopt" %% "scopt" % "3.2.0",
+    "com.google.guava" % "guava" % "17.0",
     "com.google.inject" % "guice" % "4.0-beta4",
     "com.google.inject.extensions" % "guice-multibindings" % "4.0-beta4",
     "com.typesafe.akka" %% "akka-actor" % AkkaVersion,
