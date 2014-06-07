@@ -4,10 +4,10 @@ import spray.routing.Directives
 
 import javax.inject.Inject
 import com.typesafe.scalalogging.slf4j.LazyLogging
-import sandbox.frame.spray.ApiPlugin
+import sandbox.frame.spray.ApiComponent
 
 class EchoApi @Inject()
-  extends ApiPlugin
+  extends ApiComponent
   with Directives
   with LazyLogging
 {

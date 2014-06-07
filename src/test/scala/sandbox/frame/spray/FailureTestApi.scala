@@ -6,7 +6,7 @@ import scala.concurrent.{Future, ExecutionContext}
 import spray.http.StatusCodes
 
 class FailureTestApi(implicit ec: ExecutionContext)
-  extends ApiPlugin
+  extends ApiComponent
   with Directives
   with LazyLogging
 {

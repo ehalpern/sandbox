@@ -1,7 +1,6 @@
 package sandbox.app.climate.wbclimate
 
 import akka.actor.ActorRefFactory
-import com.typesafe.scalalogging.slf4j.LazyLogging
 import javax.inject.{Named, Inject}
 import scala.concurrent.Future
 import spray.client.pipelining._
@@ -22,7 +21,6 @@ class WbClimateClientImpl @Inject()(@Named("wbclimate.endpoint") endpoint: Strin
                                    (implicit af: ActorRefFactory)
   extends WbClimateClient
   with WbClimateData.JsonProtocol
-  with LazyLogging
 {
   private implicit val ec = af.dispatcher
 
@@ -49,7 +47,6 @@ class WbClimateClientImpl @Inject()(@Named("wbclimate.endpoint") endpoint: Strin
     country: String
   ) = {
     val s = s"$endpoint/country/$dataStat/$dataType/$fromYear/$toYear/$country.json"
-    logger.debug(s"URI: $s")
     Uri(s)
   }
 }

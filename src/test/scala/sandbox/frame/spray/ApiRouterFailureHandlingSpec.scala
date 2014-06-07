@@ -13,7 +13,7 @@ class ApiRouterFailureHandlingSpec extends StandardSpec
 {
   override def actorRefFactory = system
 
-  override def apis: Seq[ApiPlugin] = {
+  override def apis: Seq[ApiComponent] = {
     Seq(new FailureTestApi()(executor))
   }
 

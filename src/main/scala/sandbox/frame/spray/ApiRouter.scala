@@ -8,7 +8,7 @@ import spray.http.StatusCodes
 import com.typesafe.scalalogging.slf4j.LazyLogging
 import spray.routing.MissingQueryParamRejection
 
-class ApiRouterActor @Inject()(apiSet: Set[ApiPlugin]) extends HttpServiceActor with ApiRouter
+class ApiRouterActor @Inject()(apiSet: Set[ApiComponent]) extends HttpServiceActor with ApiRouter
 {
   def receive = {
     runRoute(standardRoute)
@@ -23,7 +23,7 @@ trait ApiRouter extends HttpService with LazyLogging
   /**
    * @return List of apis to include in route
    */
-  protected[this] def apis: Seq[ApiPlugin]
+  protected[this] def apis: Seq[ApiComponent]
 
   /*protected[spray]*/ lazy val standardRoute =
     logRequestResponse("MARK", Logging.InfoLevel) {

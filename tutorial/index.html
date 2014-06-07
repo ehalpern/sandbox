@@ -36,153 +36,200 @@
   </p>
 </div>
 <div>
-  <h2>Dependency Injection (DI)</h2>
-
+  <h2>The Example - A World Climate API</h2>
   <p>
-    Dependency injection provides a simple, concise way to wire applications together.
-    It removes most of the need for new, factories and singletons which all tend to
-    complicate code and interfere with modularity.
+    We'll explore a simple but real example -
   </p>
-
   <p>
-    When you use a dependency injection system, each implementation class can simply
-    declare its dependencies in its constructor and rely on the system to instantiate
-    it correctly.
+    A REST API that provides historical climate data by country.
   </p>
-
+  <p>
+    Here are the key components:
+    <ul>
+      <li>
+        <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">ClimateService</a>
+        provides world climate data by time period and country
+      </li>
+      <li>
+        <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
+        is used by the ClimateService implementation to access World Bank climate data
+      </li>
+      <li>
+        <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi.scala" class="shortcut">ClimateAPI</a>
+        exposes the ClimateService results as a REST API.
+      </li>
+    </ul>
+  </p>
+</div>
+<div>
+  <h2>Dependency Injection</h2>
+  <p>
+    Dependency injection (DI) provides a concise way to wire applications together.
+    It removes the need for <code><bold>new</bold></code> and factories (both of which
+    tend to complicate code and interfere with modularity).
+  </p>
+  <p>
+    When using a DI system, each implementation class can simply declare its dependencies
+    in its constructor and rely on the system to provide them on instantiation.
+  </p>
   <p>
     The <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">ClimateServiceImpl</a>
     class provides a simple example. It declares two dependencies:
   <ul>
     <li>
-      a <a href="#code/src/main/scala/sandbox/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
-      which it uses to access World Bank climate data.
+      A <a href="#code/src/main/scala/sandbox/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
+      used to access World Bank climate data
     </li>
     <li>
-      An implicit ExecutionContext which it uses to execute an async requests
+      An implicit
+      <a href="http://www.scala-lang.org/files/archive/nightly/docs/library/index.html#scala.concurrent.ExecutionContext">ExecutionContext</a>
+      used to execute futures
     </li>
   </ul>
   The DI system will provide both of these automatically when it instantiates the service.
   </p>
   <p>
-    Noticed the ugly @Inject() annotation? Guice (and JSR 330) requires this to mark all
-    constructors that are are candidates for injection.
+    Noticed the ugly <code>@Inject()</code> annotation?  Guice (and JSR 330) requires this to
+    mark all constructors that are are candidates for injection.
   </p>
 </div>
 <div>
   <h2>Configuration Injection</h2>
-
   <p>
     An implementation may also require configuration, and we can use DI for this too.
   </p>
-
   <p>
     <a href="#code/src/main/scala/sandbox/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClientImpl</a>
     provides an example.
+    It declares an <code>endpoint</code> constructor parameter
+    <pre><code>@Named("wbclient.endpoint") endppiont: String</code></pre>
+    used to access the World Bank API.
   </p>
-
   <p>
-    It declares an <code>endpoint</code> which it uses to contact the remote API. It annotates
-    <code>endpoint</code> with <code>@Named("wbclient.endpoint")</code> to tell the DI system that
-    it should be injected with the "wbclient.endpoint" configuration property which is defined
-    in the <a href="#code/conf/application.conf" class="shortcut">application.conf</a> file
+    This annotation tells the DI system that the value should be read from the "wbclient.endpoint"
+    configuration property (defined in
+    <a href="#code/conf/application.conf" class="shortcut">application.conf</a>)
   </p>
-
   <p>
     The <code>@Named</code> annotation qualifies a dependency that cannot be
-    identified by its type alone. During DI system initialization, we load a special
+    identified by its type alone.
+  </p>
+  <p>
+    <h3>Behind the scene</h3>
+    During DI system initialization, we load a special
     <a href="#code/src/main/scala/sandbox/frame/config/ConfigModule.scala" class="shortcut">ConfigModule</a>
-    that reads the Typesafe configuration and binds each property value to a <code>@Named("[config-key]")</code>
+    that reads the typesafe configuration and binds each property value to a <code>@Named("[config-key]")</code>
     annotation. This makes all config properties available for injection.
   </p>
 </div>
 <div>
   <h2>Modules and Bindings</h2>
-
   <p>
-    The application is composed of a set of modules with each defining a logical subsystem
-    and the bindings required to implement it. These modules are installed in dependency
-    order by the
-    <a href="#code/src/main/scala/sandbox/MainModule.scala" class="shortcut">MainModule</a>
+    The complete application is composed of a set of modules.  Each module defines a logical
+    subsystem and contains all necessary implementation bindings.
   </p>
-
   <p>
-    The MainModule does the following:
-  <ol>
-    <li>
-      Installs ConfigModule which reads loads the Typesafe config and creates a @Named
-      binding for every configuration property
-    </li>
-    <li>
-      Installs AkkaModule which
-      <ul>
-        <li>initializes the Akka system</li>
-        <li>registers an AkkaExtension that enables Akka to create Guice injected actors</li>
-        <li>binds the AkkaRefFactory and ExecutionContext so they're available for injection</li>
-      </ul>
-    </li>
-    <li>
-      Installs the ServicesModule which installs all application services
-    </li>
-    <li>
-      Installs the SprayModule which adds an HttpService and creates the actor that will
-      receive and process requests.
-    </li>
-    <li>
-      Installs the ApisModule which registers all REST APIs.
-    </li>
-  </ol>
+    <a href="#code/src/main/scala/sandbox/MainModule.scala" class="shortcut">MainModule</a> is the top
+    level module.  It installs:
+    <ul>
+      <li>
+        <a href="#code/src/main/scala/sandbox/frame/config/ConfigModule.scala" class="shortcut">ConfigModule</a>
+        which loads the Typesafe configuration and creates a @Named binding for every configuration property
+      </li>
+      <li>
+        <a href="#code/src/main/scala/sandbox/frame/akka/AkkaModule.scala" class="shortcut">AkkaModule</a> which
+        initializes the Akka system and wires Akka to use Guice for actor instantiation.  This modules also
+        binds the AkkaRefFactory and ExecutionContext so they're available for injection to all services that
+        use Akka and Futures.
+      </li>
+      <li>
+        <a href="#code/src/main/scala/sandbox/app/ServicesModule.scala" class="shortcut">ServicesModule</a>
+        which binds all application services
+      </li>
+      <li>
+        <a href="#code/src/main/scala/sandbox/frame/spray/SprayModule.scala" class="shortcut">SprayModule</a>
+        which enables an Http Server and creates the actor to handle requests
+      </li>
+      <li>
+        <a href="#code/src/main/scala/sandbox/app/ApisModule.scala" class="shortcut">ApisModule</a> which
+        registers all REST APIs
+      </li>
+    </ul>
   </p>
 </div>
 <div>
-  </p>
-  loads each of these modules in dependent order to start the system.
-  defines a logical subsystem and defines the bindings required to implement that subsystem.
-  The
-  for that piece. DI system bindings are defined in a set of Modules. Each module represents a logical piece of
-  the application, and these modules can be composed to create a building
-  block of the larger composable
-  component of
-  the system and responsible for defining the bindings for that component. is initialized with implementation bindings.
-  . The bindings of implementations (and config values) to be injected are specified in code
-  using Module's (which we'll explore later).
-  </p>
-
+  <h2>Implementing the REST API</h2>
   <p>
-    Dependency injection also helps simplify managing key implicit parameters. We bind the
-    Akka ActorSystem, ActorRefFactory and the ExecutionContext so these can simply be injected
-    into any class that requires them rather than propagating these arguments through the
-    call stack.
-    The <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi.scala" class="shortcut">ClimateApi</a>
-    class uses this technique to obtain the ExecutionContext.
-    The
-    <a href="#code/src/main/scala/sandbox/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
-    class uses this technique to inject the ActorRefFactory.
+    <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi.scala" class="shortcut">ClimateApi</a>
+    implements the REST API in our example.
+  </p>
+  <p>
+    It defines a read-only climate resource that can be used to obtain climate data for a
+    particular country or region (location) for a particular time period (fromYear - toYear).
+  </p>
+  <p>
+    The GET looks simple, but it's doing something very useful here:
+<pre><code>
+  complete {
+    climateService.query(location, from, to)
+  }
+</code></pre>
+    The query call returns a Future.  The complete directive obtains this Future, registers a
+    completion callback and returns.  At this point, the request handling thread is done.
+  </p>
+  <p>
+    When the Future later completes, the callback marshals the result to JSON and
+    sends a response through the socket that made the request.
   </p>
 </div>
-
 <div>
-  <h2>Adding a Simple API Component</h2>
-
+  <h2>Implementing ClimateService</h2>
   <p>
-
+    <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">ClimateServiceImpl</a>
+    implements a single <code>query</code> method for obtaining climate data.
+  </p>
+  <p>
+    The method makes two requests to the World Bank Climate API and
+    combines the results into a single
+    <a href="#code/src/main/scala/sandbox/app/climate/model/ClimateQueryResult.scala" class="shortcut">ClimateQueryResult</a>.
+  </p>
+  <p>
+    Although it reads sequentially, the code is actually asynchronous.
+<pre><code>
+(for {
+  temp <- wbClient.fetchTemperatureStats(location, fromYear, toYear)
+  rain <- wbClient.fetchPrecipitationStats(location, fromYear, toYear)
+} yield {
+  ClimateStats.fromData(location, fromYear, toYear, temp, rain)
+})
+</code></pre>
+    Both <code>wbClientXXX</code> calls return Future[WbClimateData].
+    The for comprehension actually combines these Futures into a new Future[ClimateStats]
+    which completes with the combined result.
+  </p>
+    Under the covers, it is simply using
+    <a href="http://www.scala-lang.org/api/current/index.html#scala.concurrent.Future@map[S](f:T=>S)(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[S]" class="shortcut">
+      Future.map
+    </a>
+    and variants to build a chain of callbacks.
+  </p>
+  <p>
+    The last map call
+<pre><code>
+}) map { stats =>
+  ClimateQueryResult(List(stats))
+}
+</code></pre>
+    adds a final step to the chain that transforms the data to a ClimateQueryResult.
   </p>
 </div>
-
 <div>
-  <h2>Adding a Complete Service</h2>
-
+  <h2>Implementing the Asynchronous API Client</h2>
   <p>
+    <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">WbClimateClientImpl</a>
+    implements access to the supporting World Bank Climate API.
   </p>
 </div>
-
-<div>
-  <h2>Combining Configuration & Dependency Injection</h2>
-
-  <p>
-  </p>
-</div>
-
 <div>
   <h2>Understanding Dependency Injection with Akka</h2>
 

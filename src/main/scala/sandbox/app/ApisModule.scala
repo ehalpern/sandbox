@@ -2,13 +2,13 @@ package sandbox.app
 
 import net.codingwell.scalaguice._
 
-import sandbox.frame.spray.ApiPlugin
+import sandbox.frame.spray.ApiComponent
 import sandbox.app.echo.EchoApi
 import sandbox.app.climate.ClimateApi
 
 class ApisModule extends ScalaModule
 {
-  private lazy val apiBinder = ScalaMultibinder.newSetBinder[ApiPlugin](binder)
+  private lazy val apiBinder = ScalaMultibinder.newSetBinder[ApiComponent](binder)
 
   protected[this] def bindApi = {
     apiBinder.addBinding

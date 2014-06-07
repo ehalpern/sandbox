@@ -4,7 +4,7 @@ import akka.actor.ActorRefFactory
 import com.google.inject.{Guice, Provides}
 import net.codingwell.scalaguice.ScalaModule
 import org.scalatest.concurrent.IntegrationPatience
-import sandbox.frame.spray.{ApiRouter, ApiPlugin}
+import sandbox.frame.spray.{ApiRouter, ApiComponent}
 import scala.concurrent.duration._
 import spray.testkit._
 
@@ -41,7 +41,7 @@ trait IntegTestSupport extends IntegrationPatience
      * [[sandbox.frame.spray.ApiRouterActor]]
      */
     @Provides
-    def provideApiRouter(apiSet: Set[ApiPlugin], arf: ActorRefFactory): ApiRouter = {
+    def provideApiRouter(apiSet: Set[ApiComponent], arf: ActorRefFactory): ApiRouter = {
       new ApiRouter {
         implicit def actorRefFactory = arf
 

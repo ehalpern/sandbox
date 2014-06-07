@@ -1,9 +1,8 @@
 package sandbox.frame.spray
 
 import spray.routing.Route
-import scala.concurrent.ExecutionContext
 
-trait ApiPlugin
+trait ApiComponent
 {
   def route: Route
 }

@@ -1,20 +1,18 @@
 package sandbox.app.climate
 
+import javax.inject.Inject
+import org.json4s.ext.EnumNameSerializer
+import org.json4s.{Formats, DefaultFormats}
+import sandbox.frame.spray.ApiComponent
+import scala.concurrent.ExecutionContext
+import spray.httpx.Json4sJacksonSupport
 import spray.routing.Directives
 
-import javax.inject.Inject
-import com.typesafe.scalalogging.slf4j.LazyLogging
-import scala.concurrent.ExecutionContext
-import sandbox.frame.spray.ApiPlugin
-import spray.httpx.Json4sJacksonSupport
-import org.json4s.{Formats, DefaultFormats}
-import org.json4s.ext.EnumNameSerializer
 
 class ClimateApi @Inject()(climateService: ClimateService)
                           (implicit ec: ExecutionContext)
   extends Directives
-  with ApiPlugin
-  with LazyLogging
+  with ApiComponent
   with ClimateApiJsonSupport
 {
   def route = {
@@ -35,7 +33,9 @@ class ClimateApi @Inject()(climateService: ClimateService)
 }
 
 trait ClimateApiJsonSupport extends Json4sJacksonSupport {
+
   import sandbox.app.climate.model.{PrecipitationUnit, TemperatureUnit}
+
   def json4sJacksonFormats: Formats = DefaultFormats +
     new EnumNameSerializer(TemperatureUnit) +
     new EnumNameSerializer(PrecipitationUnit)
