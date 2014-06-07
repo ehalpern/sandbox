@@ -13,17 +13,18 @@ case class WbClimateData(
   toYear: Int,
   annualData: Option[Seq[Double]]
 )
-object WbClimateData {
+object WbClimateData
+{
+  trait JsonProtocol extends Json4sJacksonSupport {
+    override implicit def json4sJacksonFormats: Formats = DefaultFormats
+  }
+
   def dummyTemperatureData(fromYear: Int, toYear: Int) = {
     WbClimateData("tas", "annualavg", fromYear, toYear, Some(Seq(15.0)))
   }
 
   def dummyPrecipitationData(fromYear: Int, toYear: Int) = {
     WbClimateData("pr", "annualavg", fromYear, toYear, Some(Seq(100.0)))
-  }
-
-  trait JsonProtocol extends Json4sJacksonSupport {
-    override implicit def json4sJacksonFormats: Formats = DefaultFormats
   }
 }
 

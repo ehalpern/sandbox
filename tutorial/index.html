@@ -203,15 +203,15 @@
   ClimateStats.fromData(location, fromYear, toYear, temp, rain)
 })
 </code></pre>
-    Both <code>wbClientXXX</code> calls return Future[WbClimateData].
-    The for comprehension actually combines these Futures into a new Future[ClimateStats]
+    Both <code>wbClient</code> calls return Future[WbClimateData].
+    The <b>for</b> comprehension actually combines these Futures into a new Future[ClimateStats]
     which completes with the combined result.
   </p>
     Under the covers, it is simply using
-    <a href="http://www.scala-lang.org/api/current/index.html#scala.concurrent.Future@map[S](f:T=>S)(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[S]" class="shortcut">
-      Future.map
+    <a href="http://www.scala-lang.org/api/current/index.html#scala.concurrent.Future@map[S](f:T=>S)(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[S]">
+      Future.map and flatMap
     </a>
-    and variants to build a chain of callbacks.
+    to build a chain of callbacks.
   </p>
   <p>
     The last map call
@@ -224,10 +224,49 @@
   </p>
 </div>
 <div>
-  <h2>Implementing the Asynchronous API Client</h2>
+  <h2>Implementing an Async API Client</h2>
   <p>
     <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">WbClimateClientImpl</a>
-    implements access to the supporting World Bank Climate API.
+    implements the async http client for the World Bank Climate API using:
+    <ul>
+      <li>
+        <a href="http://spray.io/documentation/1.2.1/spray-client/">Spray Client</a>
+        to handle async HTTP
+      </li>
+      <li>
+        <a href="http://json4s.org/">Json4s</a>
+        to handle json unmarshalling
+      </li>
+    </ul>
+  </p>
+  <p>
+    To understand what's going on, take a look at
+    <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">fetchTemperatureStats</a> :
+  </p>
+  <p>
+    The first line builds a URI.  The second, <code>pipeline(Get(uri))</code>,
+    puts a Get request into the processing pipeline.
+  </p>
+  <p>
+    The pipeline defines the stages for http processing:
+<pre><code>
+val pipeline: HttpRequest => Future[Seq[WbClimateData]] =
+  sendReceive ~>
+    unmarshal[Seq[WbClimateData]]
+</code></pre>
+  </p>
+  <p>
+    The <code>sendReceive</code> stage sends the request
+    (using <a href="http://doc.akka.io/docs/akka/snapshot/scala/io.html">Akka IO</a>)
+    and processes the response on completion.
+  </p>
+  <p>
+    The <code>unmarshal</code> stage deserializes the response into Seq{WbClimateData].  We've employed Json4s
+    to handle unmashalling by mixing in
+    <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateData.scala" class="shortcut">WbClimateData.JsonProtocol</a>.
+  </p>
+  <p>
+    As we've seen before, the pipeline is implemented under the covers as a chain of (future completion) callbacks.
   </p>
 </div>
 <div>

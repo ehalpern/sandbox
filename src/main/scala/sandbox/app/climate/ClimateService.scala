@@ -27,19 +27,4 @@ class ClimateServiceImpl @Inject()(wbClient: WbClimateClient)
       ClimateQueryResult(List(stats))
     }
   }
-
-
-  def query2(location: String, fromYear: Int, toYear: Int) : Future[ClimateStats]
-  = {
-    val r1 = (for {
-      temp <- wbClient.fetchTemperatureStats(location, fromYear, toYear)
-      rain <- wbClient.fetchPrecipitationStats(location, fromYear, toYear)
-    } yield {
-      ClimateStats.fromData(location, fromYear, toYear, temp, rain)
-    })
-    r1
-
-
-  }
-
 }
