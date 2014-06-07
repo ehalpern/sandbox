@@ -26,14 +26,6 @@
     </li>
   </ul>
   </p>
-  <p>
-    Along the way, you will also see:
-  <ul>
-    <li>How to integrate Guice with Akka and Spray</li>
-    <li>How to use Json4s for typesafe json marshalling/unmarshalling</li>
-    <li>How easily build unit and integration tests for these services</li>
-  </ul>
-  </p>
 </div>
 <div>
   <h2>The Example - A World Climate API</h2>
@@ -280,31 +272,39 @@ val pipeline: HttpRequest => Future[Seq[WbClimateData]] =
   </p>
 </div>
 <div>
-  <h2>Testing REST APIs</h2>
-
+  <h2>Unit Testing the API</h2>
   <p>
+    <a href="#code/src/test/scala/sandbox/app/climate/ClimateApiSpec" class="shortcut">ClimateApiSpec</a>
+    defines the unit test for <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi" class="shortcut">ClimateApi</a>.
   </p>
-</div>
-
-<div>
-  <h2>Testing Asynchronous Services</h2>
-
   <p>
+    It uses the spray testkit and the Mokito mocking framework to run an isolated
+    test against ClimateApi.  Rather than use dependency injection in this case,
+    we instantiate the ClimateApi directly and pass in a mock service for it to run
+    against.
   </p>
+  <p>
+    This test is structured so we can reuse it for running an integration test which
+    we'll explore in next.
   </p>
 </div>
 
 <div>
   <h2>Integration Testing</h2>
-
   <p>
+    <a href="#code/src/test/scala/sandbox/app/climate/ClimateApiIntegSpec" class="shortcut">ClimateApiIntegSpec</a>
+    extends the unit test to run against a real service.
   </p>
-</div>
-
-<div>
-  <h2>Next Steps</h2>
-
   <p>
+    Instead of creating route with ClimateApi and a mock ClientService, it uses
+    the getAppRouteInstance defined in <a href="#code/src/test/scala/sandbox/IntegTestSupport" class="shortcut">IntegTestSupport</a>
+  </p>
+  <p>
+    This returns a route that is implemented as the real application, which has been
+    constructed using the DI framework.
+  </p>
+  <p>
+    You can run this test using "sbt integ:test"
   </p>
 </div>
 </body>
