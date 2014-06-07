@@ -29,8 +29,9 @@ resolvers ++= Seq(
   val SprayVersion = "1.3.1-20140423"
   val ScalaTestVersion = "2.1.4"
   libraryDependencies ++= Seq(
-    "com.etaty.rediscala" %% "rediscala" % "1.3.1",
     "com.github.scopt" %% "scopt" % "3.2.0",
+    "com.google.inject" % "guice" % "4.0-beta4",
+    "com.google.inject.extensions" % "guice-multibindings" % "4.0-beta4",
     "com.typesafe.akka" %% "akka-actor" % AkkaVersion,
     "com.typesafe.akka" %% "akka-slf4j" % AkkaVersion,
     "com.typesafe" % "config" % "1.2.0",
@@ -40,7 +41,7 @@ resolvers ++= Seq(
     "io.spray" %% "spray-client" % SprayVersion,
     "io.spray" %% "spray-json" % "1.2.6",
     "io.spray" %% "spray-routing" % SprayVersion,
-    "net.codingwell" %% "scala-guice" % "4.0.0-beta4",
+    //"net.codingwell" %% "scala-guice" % "4.0.0-beta4",
     "org.apache.logging.log4j" % "log4j-api" % Log4jVersion,
     "org.apache.logging.log4j" % "log4j-core" % Log4jVersion,
     "org.apache.logging.log4j" % "log4j-slf4j-impl" % Log4jVersion,
