@@ -22,7 +22,11 @@
       How to inject configuration properties to avoid boilerplate configuration code
     </li>
     <li>
-      How to use this structure to build and test a complete, reactive REST service
+      Clear, concise patterns for implementing reactive, end-to-end REST services using Spray
+    </li>
+    <li>
+      How to combine these techniques to provide a simple, complete, scalable structure for
+      building REST server applications
     </li>
   </ul>
   </p>
@@ -30,9 +34,7 @@
 <div>
   <h2>The Example - A World Climate API</h2>
   <p>
-    We'll explore a simple but real example -
-  </p>
-  <p>
+    We'll explore a simple but complete example -
     A REST API that provides historical climate data by country.
   </p>
   <p>
@@ -44,7 +46,8 @@
       </li>
       <li>
         <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
-        is used by the ClimateService implementation to access World Bank climate data
+        is used by the ClimateService implementation to access the
+        <a href="http://data.worldbank.org/developers/climate-data-api">World Bank Climate API</a>
       </li>
       <li>
         <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi.scala" class="shortcut">ClimateAPI</a>
@@ -57,7 +60,7 @@
   <h2>Dependency Injection</h2>
   <p>
     Dependency injection (DI) provides a concise way to wire applications together.
-    It removes the need for <code><bold>new</bold></code> and factories (both of which
+    It removes the need for <code><b>new</b></code> and factories (both of which
     tend to complicate code and interfere with modularity).
   </p>
   <p>
@@ -69,7 +72,7 @@
     class provides a simple example. It declares two dependencies:
   <ul>
     <li>
-      A <a href="#code/src/main/scala/sandbox/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
+      A <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
       used to access World Bank climate data
     </li>
     <li>
@@ -94,7 +97,7 @@
     <a href="#code/src/main/scala/sandbox/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClientImpl</a>
     provides an example.
     It declares an <code>endpoint</code> constructor parameter
-    <pre><code>@Named("wbclient.endpoint") endppiont: String</code></pre>
+    <pre><code>@Named("wbclient.endpoint") endpoint: String</code></pre>
     used to access the World Bank API.
   </p>
   <p>
@@ -103,8 +106,10 @@
     <a href="#code/conf/application.conf" class="shortcut">application.conf</a>)
   </p>
   <p>
-    The <code>@Named</code> annotation qualifies a dependency that cannot be
-    identified by its type alone.
+    The
+    <a href="https://code.google.com/p/google-guice/wiki/BindingAnnotations#@Named">@Named</a>
+    annotation is a Guice/JSR330 way to qualify a dependency that cannot be identified by
+    its type alone.
   </p>
   <p>
     <h3>Behind the scene</h3>
@@ -121,29 +126,32 @@
     subsystem and contains all necessary implementation bindings.
   </p>
   <p>
-    <a href="#code/src/main/scala/sandbox/MainModule.scala" class="shortcut">MainModule</a> is the top
-    level module.  It installs:
+    The program entry point
+    <a href="#code/src/main/scala/sandbox/Main.scala" class="shortcut">Main</a>
+    wires the application by installing
+    <a href="#code/src/main/scala/sandbox/MainModule.scala" class="shortcut">MainModule</a>.
+    This module, in turn, installs all of the sub-modules required required to start the server:
     <ul>
       <li>
         <a href="#code/src/main/scala/sandbox/frame/config/ConfigModule.scala" class="shortcut">ConfigModule</a>
-        which loads the Typesafe configuration and creates a @Named binding for every configuration property
+        loads the Typesafe configuration and creates a @Named binding for every configuration property
       </li>
       <li>
-        <a href="#code/src/main/scala/sandbox/frame/akka/AkkaModule.scala" class="shortcut">AkkaModule</a> which
+        <a href="#code/src/main/scala/sandbox/frame/akka/AkkaModule.scala" class="shortcut">AkkaModule</a>
         initializes the Akka system and wires Akka to use Guice for actor instantiation.  This module also
         binds the AkkaRefFactory and ExecutionContext so they're available for injection to all services that
         use Akka and Futures.
       </li>
       <li>
         <a href="#code/src/main/scala/sandbox/app/ServicesModule.scala" class="shortcut">ServicesModule</a>
-        which binds all application services
+        binds all application services
       </li>
       <li>
         <a href="#code/src/main/scala/sandbox/frame/spray/SprayModule.scala" class="shortcut">SprayModule</a>
-        which enables an Http Server and creates the actor to handle requests
+        enables an Http Server and creates the actor to handle requests
       </li>
       <li>
-        <a href="#code/src/main/scala/sandbox/app/ApisModule.scala" class="shortcut">ApisModule</a> which
+        <a href="#code/src/main/scala/sandbox/app/ApisModule.scala" class="shortcut">ApisModule</a>
         registers all REST APIs
       </li>
     </ul>
