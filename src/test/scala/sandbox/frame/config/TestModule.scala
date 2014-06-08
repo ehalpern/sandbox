@@ -5,11 +5,15 @@ import net.codingwell.scalaguice.ScalaModule
 
 /**
  */
-class TestModule(config: Config) extends ScalaModule with ConfigBindingSupport
+class TestModule(config: Config) extends ScalaModule
 {
   def configure {
     bind[TestInjectable]
-    bindConfig(config)
+    install(new ConfigModule {
+      override def loadConfig() = {
+        config
+      }
+    })
   }
 }
 

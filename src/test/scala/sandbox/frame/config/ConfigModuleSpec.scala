@@ -5,7 +5,7 @@ import org.scalatest.{Matchers, FunSpec}
 import com.google.inject.Guice
 import com.typesafe.config.{ConfigFactory, Config}
 
-class ConfigBindingSupportSpec extends FunSpec with Matchers
+class ConfigModuleSpec extends FunSpec with Matchers
 {
   def loadConfig(fileName: String) = {
     System.setProperty("config.trace", "loads")
