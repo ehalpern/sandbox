@@ -30,14 +30,10 @@ resolvers ++= Seq(
   val ScalaTestVersion = "2.1.4"
   libraryDependencies ++= Seq(
     "com.github.scopt" %% "scopt" % "3.2.0",
-    //"com.google.guava" % "guava" % "17.0",
-    //"com.google.inject" % "guice" % "4.0-beta4",
-    //"com.google.inject.extensions" % "guice-multibindings" % "4.0-beta4",
     "com.typesafe.akka" %% "akka-actor" % AkkaVersion,
     "com.typesafe.akka" %% "akka-slf4j" % AkkaVersion,
     "com.typesafe" % "config" % "1.2.0",
     "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2",
-    //"commons-io" % "commons-io" % "2.1",
     "io.spray" %% "spray-can" % SprayVersion,
     "io.spray" %% "spray-client" % SprayVersion,
     "io.spray" %% "spray-json" % "1.2.6",

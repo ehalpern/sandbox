@@ -14,7 +14,7 @@ object TestInjectable {
  )
 }
 
-class TestInjectable @Inject()(
+class TestInjectable @Inject() (
   @Named("test.int")        intValue: Int,
   @Named("test.double")     doubleValue: Double,
   @Named("test.boolean")    booleanValue: Boolean,
