@@ -1,7 +1,7 @@
 package sandbox.frame.config
 
-import net.codingwell.scalaguice.ScalaModule
 import com.typesafe.config.Config
+import net.codingwell.scalaguice.ScalaModule
 
 /**
  */

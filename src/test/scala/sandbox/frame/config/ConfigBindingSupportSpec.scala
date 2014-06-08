@@ -8,9 +8,8 @@ import com.typesafe.config.{ConfigFactory, Config}
 class ConfigBindingSupportSpec extends FunSpec with Matchers
 {
   def loadConfig(fileName: String) = {
-    val path = s"${getClass.getPackage.getName.replace(".", "/")}/$fileName"
     System.setProperty("config.trace", "loads")
-    ConfigFactory.load(path)
+    ConfigFactory.load(fileName)
   }
 
   def getExpectedValues(config: Config) = {
