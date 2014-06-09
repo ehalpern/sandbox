@@ -16,7 +16,7 @@ object ConfigFactoryWithEnvironmentOverride
     // configuration.
     val standard = ConfigFactory.load()
     val env = standard.getString("env")
-    val custom = ConfigFactory.parseResourcesAnySyntax(standard.getString("env"))
+    val custom = ConfigFactory.parseResourcesAnySyntax(env)
     if (custom.isEmpty) {
       throw new IllegalStateException(
         s"The 'env' system property is set to $env but " +

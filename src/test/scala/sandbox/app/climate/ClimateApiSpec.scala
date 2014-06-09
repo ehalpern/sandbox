@@ -1,12 +1,10 @@
 package sandbox.app.climate
 
 import org.mockito.Mockito._
-import sandbox.app.climate.model.ClimateQueryResult
+import sandbox.app.climate.model.{ClimateStats, ClimateQueryResult}
 import sandbox.{UnitTestSupport, StandardSpec}
 import scala.concurrent.Future
 import spray.http.StatusCodes
-import scala.concurrent.duration._
-
 
 /**
  * ClimateApi unit tests.
@@ -42,9 +40,9 @@ class ClimateApiSpec extends StandardSpec with UnitTestSupport
       "given a valid location and range" in {
         Get("/climate?location=FJI&fromYear=1980&toYear=1999") ~> testRoute ~> check {
           status should be(StatusCodes.OK)
-          val r = responseAs[ClimateQueryResult]
-          r.list should be ('nonEmpty)
-          val stat = r.list.head
+          val r = responseAs[Seq[ClimateStats]]
+          r should be ('nonEmpty)
+          val stat = r.head
           stat should have (
             'location (TestLocation),
             'fromYear (TestFromYear),

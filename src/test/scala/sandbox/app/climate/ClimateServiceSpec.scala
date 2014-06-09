@@ -34,8 +34,8 @@ class ClimateServiceSpec extends StandardSpec with UnitTestSupport
   "a query for 20 year average Fiji climate" should {
     "respond with entry containing precipitation and temperature" in {
       whenReady (climateService.query(TestLocation, TestFromYear, TestToYear)) { r =>
-        r.list should be ('nonEmpty)
-        val entry = r.list.head
+        r should be ('nonEmpty)
+        val entry = r.head
         entry should have (
           'location (TestLocation),
           'fromYear (TestFromYear),

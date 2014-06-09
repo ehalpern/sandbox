@@ -164,7 +164,11 @@
     implements the REST API in our example.
   </p>
   <p>
-    It defines a read-only climate resource that can be used to obtain climate data for a
+    It defines a <b>climate</b> resource that provides climate data by region and time range.
+
+    using GET /climate?location=country&fromYear=1980&toYear=1999
+
+    read-only climate resource that can be used to obtain climate data for a
     particular location for a particular time period (fromYear - toYear), and it uses a
     <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">ClimateService</a>
     to obtain the data.

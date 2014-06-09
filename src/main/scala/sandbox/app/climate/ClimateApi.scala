@@ -8,7 +8,6 @@ import scala.concurrent.ExecutionContext
 import spray.httpx.Json4sJacksonSupport
 import spray.routing.Directives
 
-
 class ClimateApi @Inject()(climateService: ClimateService)
                           (implicit ec: ExecutionContext)
   extends Directives

@@ -11,15 +11,12 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 // Add external conf directory to the classpath
 unmanagedClasspath in Test += baseDirectory.value / "conf"
 
-unmanagedClasspath in IntegTest += baseDirectory.value / "conf"
-
 unmanagedClasspath in Runtime += baseDirectory.value / "conf"
 
 resolvers ++= Seq(
   "typesafe.com" at "http://repo.typesafe.com/typesafe/repo/",
   "sonatype.org" at "https://oss.sonatype.org/content/repositories/releases",
-  "spray.io" at "http://repo.spray.io",
-  "rediscala" at "http://dl.bintray.com/etaty/maven"
+  "spray.io" at "http://repo.spray.io"
 )
 
 {
