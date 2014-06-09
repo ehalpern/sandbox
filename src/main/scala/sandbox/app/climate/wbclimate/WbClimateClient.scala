@@ -3,6 +3,7 @@ package sandbox.app.climate.wbclimate
 import akka.actor.ActorRefFactory
 import javax.inject.{Named, Inject}
 import scala.concurrent.Future
+import scala.math._
 import spray.client.pipelining._
 import spray.http._
 
@@ -50,3 +51,15 @@ class WbClimateClientImpl @Inject()(@Named("wbclimate.endpoint") endpoint: Strin
     Uri(s)
   }
 }
+
+object WbClimateClient {
+  // 1920 <= from <= 2080 on 20 year boundary and to must always be from+19
+  // from != 2000
+  def closestPeriod(from: Int, to: Int) = {
+    min(max(from, 1920),2080)/20 * 20 match {
+      case x if x == 2000 => (2020, 2039)
+      case x => (x, x + 19)
+    }
+  }
+}
+

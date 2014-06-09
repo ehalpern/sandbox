@@ -35,7 +35,7 @@
   <h2>The Example - A World Climate API</h2>
   <p>
     We'll explore a simple but complete example -
-    A REST API that provides historical climate data by country.
+    A REST API that provides model-based climate data by country.
   </p>
   <p>
     Here are the key components:
@@ -161,78 +161,66 @@
   <h2>Implementing the REST API</h2>
   <p>
     <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi.scala" class="shortcut">ClimateApi</a>
-    implements the REST API in our example.
-  </p>
-  <p>
-    It defines a <b>climate</b> resource that provides climate data by region and time range.
-
-    using GET /climate?location=country&fromYear=1980&toYear=1999
-
-    read-only climate resource that can be used to obtain climate data for a
-    particular location for a particular time period (fromYear - toYear), and it uses a
-    <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">ClimateService</a>
-    to obtain the data.
-  </p>
-  </p>
-  <p>
-    The GET looks simple, but there's more to it than meets the eye.  The complete block is
-    asynchronous:
+    implements our example REST API.  It defines <b>GET climate</b> which retrieves climate data by
+    region and period.  Here's an example:
 <pre><code>
-  complete {
-    climateService.query(location, from, to)
-  }
+curl 'localhost:9080/climate?location=FJI&fromYear=1980&toYear=1999'
+# returns
+{"location": "FJI" "fromYear": 1980, "toYear": 1999,
+  "precipitation": { "annual": 2166.58, "unit": "Centimeters" },
+  "temperature":   { "annual": 24.78, "unit": "Celsius" }
+}
 </code></pre>
+  </p>
+  <p>
+    The <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi.scala" class="shortcut">implementation</a>
+    uses the  <a href="http://spray.io/documentation/1.2.1/spray-routing/">spray routing DSL</a>
+    to declare the resource, method and parameters, and delegates the real work to
+    <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">ClimateService</a>
+    in the complete block:
+<pre><code>
+complete {
+  climateService.query(location, from, to)
+}
+</code></pre>
+    This is the async bit.
     The  <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">climateService.query</a>
-    call returns a Future.  The complete directive obtains this Future, registers a
-    completion callback and returns.  At this point, the request handling thread is done.
+    call returns a Future.  The complete directive registers a completion callback with this future and relinquishes the
+    thread.
   </p>
   <p>
-    When the Future later completes, the callback marshals the result to JSON and
-    sends a response through the socket that made the request.
+    When the Future later completes, the callback marshals the
+    <a href="#code/src/main/scala/sandbox/app/climate/model/ClimateStats.scala" class="shortcut">Seq[ClimateStats]</a>
+    to JSON and sends a response through the socket that made the request.
   </p>
   <p>
-    So the code is easy to read sequentially, but it is executed asynchronously.
+    So while the code reads sequentially, it is executed asynchronously.
   </p>
 </div>
 <div>
   <h2>Implementing ClimateService</h2>
   <p>
     <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">ClimateServiceImpl</a>
-    implements a single <code>query</code> method for obtaining climate data.
+    implements the ClimateService.
   </p>
   <p>
-    The method makes two requests to the World Bank Climate API and
-    combines the results into a single
-    <a href="#code/src/main/scala/sandbox/app/climate/model/ClimateQueryResult.scala" class="shortcut">ClimateQueryResult</a>.
+    It consists of a single <code>query</code> method that combines the results of
+    two remote requests to the World Bank Climate API (using WbClimateClient).
   </p>
   <p>
-    Although it reads sequentially, the code is actually asynchronous.
+    As with the API implementation, it appears sequential but is actually asynchronous.
 <pre><code>
 (for {
-  temp <- wbClient.fetchTemperatureStats(location, fromYear, toYear)
-  rain <- wbClient.fetchPrecipitationStats(location, fromYear, toYear)
+  temp <- wbClient.fetchTemperatureStats(location, from, to)
+  rain <- wbClient.fetchPrecipitationStats(location, from, to)
 } yield {
-  ClimateStats.fromData(location, fromYear, toYear, temp, rain)
+  ClimateStats.fromData(location, from, to, temp, rain)
 })
 </code></pre>
     Both <code>wbClient</code> calls return Future[WbClimateData].
-    The <b>for</b> comprehension actually combines these Futures into a new Future[ClimateStats]
-    which completes with the combined result.
-  </p>
-    Under the covers, it is simply using
-    <a href="http://www.scala-lang.org/api/current/index.html#scala.concurrent.Future@map[S](f:T=>S)(implicitexecutor:scala.concurrent.ExecutionContext):scala.concurrent.Future[S]">
-      Future.map and flatMap
-    </a>
-    to build a chain of callbacks.
-  </p>
-  <p>
-    The last map call
-<pre><code>
-}) map { stats =>
-  ClimateQueryResult(List(stats))
-}
-</code></pre>
-    adds a final step to the chain that transforms the data to a ClimateQueryResult.
+    The <a href="http://doc.akka.io/docs/akka/snapshot/scala/futures.html#For_Comprehensions">for</a>
+    comprehension actually combines these Futures into a new Future[ClimateStats].  Under the covers,
+    this is implemented as a chain of completion callbacks.
   </p>
 </div>
 <div>
@@ -257,8 +245,8 @@
     to see how things fit together.
   </p>
   <p>
-    The first line builds a URI.  The second, <code>pipeline(Get(uri))</code>,
-    puts a Get request into the processing pipeline.
+    This method builds the request and than calls <code>pipeline(Get(uri))</code>
+    to push it into an asynchronous processing pipeline.
   </p>
   <p>
     The pipeline defines the stages for http processing:
@@ -274,13 +262,12 @@ val pipeline: HttpRequest => Future[Seq[WbClimateData]] =
     and processes the response on completion.
   </p>
   <p>
-    The <code>unmarshal</code> stage deserializes the response into Seq{WbClimateData].  We've employed Json4s
-    to handle unmashalling by mixing in
+    The <code>unmarshal</code> stage deserializes the response into Seq[WbClimateData] when
+    it's ready.  We enable Json4s to handle unmashalling by mixing in
     <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateData.scala" class="shortcut">WbClimateData.JsonProtocol</a>.
   </p>
   <p>
-    As we've seen before, the pipeline is easy to understand sequentially but is actually implemented under the
-    covers as an async chain of (future completion) callbacks.
+    The pipeline returns the future result for the request.
   </p>
 </div>
 <div>

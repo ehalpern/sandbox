@@ -40,18 +40,14 @@ class ClimateApiSpec extends StandardSpec with UnitTestSupport
       "given a valid location and range" in {
         Get("/climate?location=FJI&fromYear=1980&toYear=1999") ~> testRoute ~> check {
           status should be(StatusCodes.OK)
-          val r = responseAs[Seq[ClimateStats]]
-          r should be ('nonEmpty)
-          val stat = r.head
-          stat should have (
+          val r = responseAs[ClimateStats]
+          r should have (
             'location (TestLocation),
             'fromYear (TestFromYear),
             'toYear   (TestToYear)
           )
-          stat.precipitation should be ('defined)
-          stat.precipitation.get.annual should be > 1.0
-          stat.temperature should be ('defined)
-          stat.temperature.get.annual should be > 1.0
+          r.precipitation.annual should be > 1.0
+          r.temperature.annual should be > 1.0
         }
       }
     }

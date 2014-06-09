@@ -20,8 +20,8 @@ case class ClimateStats(
   location: String,
   fromYear: Int,
   toYear: Int,
-  temperature: Option[Temperature] = None,
-  precipitation: Option[Precipitation] = None
+  temperature: Temperature,
+  precipitation: Precipitation
 ) {
   require(fromYear >= 1900, "fromYear must be >= 1900")
   require(toYear   >= 1900, "toYear must be >= 1900")
@@ -31,8 +31,8 @@ object ClimateStats {
   def fromData(
     location: String,
     fromYear: Int, toYear: Int,
-    tempData: Seq[WbClimateData],
-    precipitationData: Seq[WbClimateData]
+    tempData: WbClimateData,
+    precipitationData: WbClimateData
   ) = {
     ClimateStats(
       location, fromYear, toYear,
@@ -48,18 +48,14 @@ case class Temperature(
   monthly: Option[Seq[Double]] = None
 )
 object Temperature {
-  def fromData(data: Seq[WbClimateData]) = {
-    data match {
-      case list if list.nonEmpty =>
-        Some(Temperature(
-          Celsius,
-          list.head.annualData match {
-            case Some(list) => list.head
-            case None => -1.0
-          }
-        ))
-      case _ => None
-    }
+  def fromData(data: WbClimateData) = {
+    Temperature(
+      Celsius,
+      data.annualData match {
+        case Some(list) => list.head
+        case None => -1.0
+      }
+    )
   }
 }
 
@@ -69,17 +65,13 @@ case class Precipitation(
  monthly: Option[Seq[Double]] = None
 )
 object Precipitation {
-  def fromData(data: Seq[WbClimateData]) = {
-    data match {
-      case list if list.nonEmpty =>
-        Some(Precipitation(
-          Centimeters,
-          list.head.annualData match {
-            case Some(list) => list.head
-            case None => -1.0
-          }
-        ))
-      case _ => None
-    }
+  def fromData(data: WbClimateData) = {
+    Precipitation(
+      Centimeters,
+      data.annualData match {
+        case Some(list) => list.head
+        case None => -1.0
+      }
+    )
   }
 }
