@@ -72,7 +72,7 @@
     class provides a simple example. It declares two dependencies:
   <ul>
     <li>
-      A <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
+      A <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala">WbClimateClient</a>
       used to access World Bank climate data
     </li>
     <li>
@@ -85,7 +85,7 @@
   </p>
   <p>
     Noticed the ugly <code>@Inject()</code> annotation?  Guice (and JSR 330) requires this to
-    mark all constructors that are are candidates for injection.
+    mark all constructors that are candidates for injection.
   </p>
 </div>
 <div>
@@ -94,7 +94,7 @@
     An implementation may also require configuration, and we can use DI for this too.
   </p>
   <p>
-    <a href="#code/src/main/scala/sandbox/app/climate/WbClimateClient.scala" class="shortcut">WbClimateClientImpl</a>
+    <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">WbClimateClientImpl</a>
     provides an example.
     It declares an <code>endpoint</code> constructor parameter
     <pre><code>@Named("wbclient.endpoint") endpoint: String</code></pre>
@@ -130,7 +130,7 @@
     <a href="#code/src/main/scala/sandbox/Main.scala" class="shortcut">Main</a>
     wires the application by installing
     <a href="#code/src/main/scala/sandbox/MainModule.scala" class="shortcut">MainModule</a>.
-    This module, in turn, installs all of the sub-modules required required to start the server:
+    This module, in turn, installs all of the sub-modules required to run the server:
     <ul>
       <li>
         <a href="#code/src/main/scala/sandbox/frame/config/ConfigModule.scala" class="shortcut">ConfigModule</a>
@@ -197,11 +197,15 @@ complete {
   <h2>Implementing ClimateService</h2>
   <p>
     <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">ClimateServiceImpl</a>
-    implements the ClimateService.
+    implements the ClimateService which provides a single <code>query</code>
+    method that returns climate data by location and time.
   </p>
   <p>
-    It consists of a single <code>query</code> method that combines the results of
-    two remote requests to the World Bank Climate API (using WbClimateClient).
+    The <code>query</code> implementation must make two remote requests to
+    the World Bank Climate API (using WbClimateClient) to obtain precipitation
+    data and temperature data.  It then combines this data in a single
+    <a href="#code/src/main/scala/sandbox/app/climate/model/ClimateStats.scala">ClimateStats</a>
+    result.
   </p>
   <p>
     As with the API implementation, it appears sequential but is actually asynchronous.
@@ -213,10 +217,16 @@ complete {
   ClimateStats.fromData(location, from, to, temp, rain)
 })
 </code></pre>
-    Both <code>wbClient</code> calls return Future[WbClimateData].
+    The <code>wbClient</code> calls both return Future[WbClimateData].
     The <a href="http://doc.akka.io/docs/akka/snapshot/scala/futures.html#For_Comprehensions">for</a>
-    comprehension actually combines these Futures into a new Future[ClimateStats].  Under the covers,
-    this is implemented as a chain of completion handlers.
+    comprehension combines these to create a Future[ClimateStats]
+    result.
+  </p>
+  <p>
+    Take a look at
+    <a href="http://doc.akka.io/docs/akka/snapshot/scala/futures.html#Functional_Futures">Funcitonal Futures</a>
+    to learn more about how map and for comprehensions
+    can be used to combine Futures.
   </p>
 </div>
 <div>
