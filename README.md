@@ -1,4 +1,6 @@
-A light scala framework for building reactive REST services in a modular,
+##Frame
+
+A light Scala framework for building reactive REST services in a modular,
 testable fashion using Typesafe Config, Guice, Akka and Spray.
 
   - Uses (Guice) dependency injection to simplify and modularize code (and tame implicits)
