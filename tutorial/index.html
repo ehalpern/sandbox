@@ -173,28 +173,24 @@ curl 'localhost:9080/climate?location=FJI&fromYear=1980&toYear=1999'
 </code></pre>
   </p>
   <p>
-    The <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi.scala" class="shortcut">implementation</a>
-    uses the  <a href="http://spray.io/documentation/1.2.1/spray-routing/">spray routing DSL</a>
+    The <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi.scala">implementation</a>
+    uses the <a href="http://spray.io/documentation/1.2.1/spray-routing/">Spray Routing DSL</a>
     to declare the resource, method and parameters, and delegates the real work to
-    <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">ClimateService</a>
+    <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala">ClimateService</a>
     in the complete block:
 <pre><code>
 complete {
   climateService.query(location, from, to)
 }
 </code></pre>
-    This is the async bit.
-    The  <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">climateService.query</a>
-    call returns a Future.  The complete directive registers a completion callback with this future and relinquishes the
-    thread.
+    The  <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala">query</a>
+    call returns a Future[ClimateStats].  The complete directive, in effect, defines a
+    completion handler for this future.  When the ClimateStats result is available,
+    it's marshalled to JSON and sent back in a response.
   </p>
   <p>
-    When the Future later completes, the callback marshals the
-    <a href="#code/src/main/scala/sandbox/app/climate/model/ClimateStats.scala" class="shortcut">Seq[ClimateStats]</a>
-    to JSON and sends a response through the socket that made the request.
-  </p>
-  <p>
-    So while the code reads sequentially, it is executed asynchronously.
+    So though the code reads sequentially, it is actually executed in an
+    asynchronous pipeline.
   </p>
 </div>
 <div>
@@ -220,7 +216,7 @@ complete {
     Both <code>wbClient</code> calls return Future[WbClimateData].
     The <a href="http://doc.akka.io/docs/akka/snapshot/scala/futures.html#For_Comprehensions">for</a>
     comprehension actually combines these Futures into a new Future[ClimateStats].  Under the covers,
-    this is implemented as a chain of completion callbacks.
+    this is implemented as a chain of completion handlers.
   </p>
 </div>
 <div>
