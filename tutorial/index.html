@@ -41,16 +41,16 @@
     Here are the key components:
     <ul>
       <li>
-        <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">ClimateService</a>
+        <a href="#code/src/main/scala/twine/app/climate/ClimateService.scala" class="shortcut">ClimateService</a>
         provides world climate data by time period and country
       </li>
       <li>
-        <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
+        <a href="#code/src/main/scala/twine/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">WbClimateClient</a>
         is used by the ClimateService implementation to access the
         <a href="http://data.worldbank.org/developers/climate-data-api">World Bank Climate API</a>
       </li>
       <li>
-        <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi.scala" class="shortcut">ClimateAPI</a>
+        <a href="#code/src/main/scala/twine/app/climate/ClimateApi.scala" class="shortcut">ClimateAPI</a>
         exposes the ClimateService results as a REST API
       </li>
     </ul>
@@ -68,11 +68,11 @@
     in its constructor and rely on the system to provide them on instantiation.
   </p>
   <p>
-    The <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">ClimateServiceImpl</a>
+    The <a href="#code/src/main/scala/twine/app/climate/ClimateService.scala" class="shortcut">ClimateServiceImpl</a>
     class provides a simple example. It declares two dependencies:
   <ul>
     <li>
-      A <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala">WbClimateClient</a>
+      A <a href="#code/src/main/scala/twine/app/climate/wbclimate/WbClimateClient.scala">WbClimateClient</a>
       used to access World Bank climate data
     </li>
     <li>
@@ -94,7 +94,7 @@
     An implementation may also require configuration, and we can use DI for this too.
   </p>
   <p>
-    <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">WbClimateClientImpl</a>
+    <a href="#code/src/main/scala/twine/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">WbClimateClientImpl</a>
     provides an example.
     It declares an <code>endpoint</code> constructor parameter
     <pre><code>@Named("wbclient.endpoint") endpoint: String</code></pre>
@@ -114,7 +114,7 @@
   <p>
     <h3>Behind the scene</h3>
     During DI system initialization, we load a special
-    <a href="#code/src/main/scala/sandbox/frame/config/ConfigModule.scala" class="shortcut">ConfigModule</a>
+    <a href="#code/src/main/scala/twine/config/ConfigModule.scala" class="shortcut">ConfigModule</a>
     that reads the typesafe configuration and binds each property value to a <code>@Named("[config-key]")</code>
     annotation. This makes all config properties available for injection.
   </p>
@@ -127,31 +127,31 @@
   </p>
   <p>
     The program entry point
-    <a href="#code/src/main/scala/sandbox/Main.scala" class="shortcut">Main</a>
+    <a href="#code/src/main/scala/twine/Main.scala" class="shortcut">Main</a>
     wires the application by installing
-    <a href="#code/src/main/scala/sandbox/MainModule.scala" class="shortcut">MainModule</a>.
+    <a href="#code/src/main/scala/twine/MainModule.scala" class="shortcut">MainModule</a>.
     This module, in turn, installs all of the sub-modules required to run the server:
     <ul>
       <li>
-        <a href="#code/src/main/scala/sandbox/frame/config/ConfigModule.scala" class="shortcut">ConfigModule</a>
+        <a href="#code/src/main/scala/twine/config/ConfigModule.scala" class="shortcut">ConfigModule</a>
         loads the Typesafe configuration and creates a @Named binding for every configuration property
       </li>
       <li>
-        <a href="#code/src/main/scala/sandbox/frame/akka/AkkaModule.scala" class="shortcut">AkkaModule</a>
+        <a href="#code/src/main/scala/twine/akka/AkkaModule.scala" class="shortcut">AkkaModule</a>
         initializes the Akka system and wires Akka to use Guice for actor instantiation.  This module also
         binds the AkkaRefFactory and ExecutionContext so they're available for injection to all services that
         use Akka and Futures.
       </li>
       <li>
-        <a href="#code/src/main/scala/sandbox/app/ServicesModule.scala" class="shortcut">ServicesModule</a>
+        <a href="#code/src/main/scala/twine/app/ServicesModule.scala" class="shortcut">ServicesModule</a>
         binds all application services
       </li>
       <li>
-        <a href="#code/src/main/scala/sandbox/frame/spray/SprayModule.scala" class="shortcut">SprayModule</a>
+        <a href="#code/src/main/scala/twine/rest/RestModule.scala" class="shortcut">SprayModule</a>
         enables an Http Server and creates the actor to handle requests
       </li>
       <li>
-        <a href="#code/src/main/scala/sandbox/app/ApisModule.scala" class="shortcut">ApisModule</a>
+        <a href="#code/src/main/scala/twine/app/ApisModule.scala" class="shortcut">ApisModule</a>
         registers all REST APIs
       </li>
     </ul>
@@ -160,7 +160,7 @@
 <div>
   <h2>Implementing the REST API</h2>
   <p>
-    <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi.scala" class="shortcut">ClimateApi</a>
+    <a href="#code/src/main/scala/twine/app/climate/ClimateApi.scala" class="shortcut">ClimateApi</a>
     implements our example REST API.  It defines <b>GET climate</b> which retrieves climate data by
     region and period.  Here's an example:
 <pre><code>
@@ -173,17 +173,17 @@ curl 'localhost:9080/climate?location=FJI&fromYear=1980&toYear=1999'
 </code></pre>
   </p>
   <p>
-    The <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi.scala">implementation</a>
+    The <a href="#code/src/main/scala/twine/app/climate/ClimateApi.scala">implementation</a>
     uses the <a href="http://spray.io/documentation/1.2.1/spray-routing/">Spray Routing DSL</a>
     to declare the resource, method and parameters, and delegates the real work to
-    <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala">ClimateService</a>
+    <a href="#code/src/main/scala/twine/app/climate/ClimateService.scala">ClimateService</a>
     in the complete block:
 <pre><code>
 complete {
   climateService.query(location, from, to)
 }
 </code></pre>
-    The  <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala">query</a>
+    The  <a href="#code/src/main/scala/twine/app/climate/ClimateService.scala">query</a>
     call returns a Future[ClimateStats].  The complete directive, in effect, defines a
     completion handler for this future.  When the ClimateStats result is available,
     it's marshalled to JSON and sent back in a response.
@@ -196,7 +196,7 @@ complete {
 <div>
   <h2>Implementing ClimateService</h2>
   <p>
-    <a href="#code/src/main/scala/sandbox/app/climate/ClimateService.scala" class="shortcut">ClimateServiceImpl</a>
+    <a href="#code/src/main/scala/twine/app/climate/ClimateService.scala" class="shortcut">ClimateServiceImpl</a>
     implements the ClimateService which provides a single <code>query</code>
     method that returns climate data by location and time.
   </p>
@@ -204,7 +204,7 @@ complete {
     The <code>query</code> implementation must make two remote requests to
     the World Bank Climate API (using WbClimateClient) to obtain precipitation
     data and temperature data.  It then combines this data in a single
-    <a href="#code/src/main/scala/sandbox/app/climate/model/ClimateStats.scala">ClimateStats</a>
+    <a href="#code/src/main/scala/twine/app/climate/model/ClimateStats.scala">ClimateStats</a>
     result.
   </p>
   <p>
@@ -232,7 +232,7 @@ complete {
 <div>
   <h2>Implementing an Async API Client</h2>
   <p>
-    <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">WbClimateClientImpl</a>
+    <a href="#code/src/main/scala/twine/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">WbClimateClientImpl</a>
     implements the async http client for the World Bank Climate API using:
     <ul>
       <li>
@@ -247,7 +247,7 @@ complete {
   </p>
   <p>
     Let's take a look at
-    <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">fetchTemperatureStats</a>
+    <a href="#code/src/main/scala/twine/app/climate/wbclimate/WbClimateClient.scala" class="shortcut">fetchTemperatureStats</a>
     to see how things fit together.
   </p>
   <p>
@@ -270,7 +270,7 @@ val pipeline: HttpRequest => Future[Seq[WbClimateData]] =
   <p>
     The <code>unmarshal</code> stage deserializes the response into Seq[WbClimateData] when
     it's ready.  We enable Json4s to handle unmashalling by mixing in
-    <a href="#code/src/main/scala/sandbox/app/climate/wbclimate/WbClimateData.scala" class="shortcut">WbClimateData.JsonProtocol</a>.
+    <a href="#code/src/main/scala/twine/app/climate/wbclimate/WbClimateData.scala" class="shortcut">WbClimateData.JsonProtocol</a>.
   </p>
   <p>
     The pipeline returns the future result for the request.
@@ -279,8 +279,8 @@ val pipeline: HttpRequest => Future[Seq[WbClimateData]] =
 <div>
   <h2>Unit Testing the API</h2>
   <p>
-    <a href="#code/src/test/scala/sandbox/app/climate/ClimateApiSpec" class="shortcut">ClimateApiSpec</a>
-    defines the unit test for <a href="#code/src/main/scala/sandbox/app/climate/ClimateApi" class="shortcut">ClimateApi</a>.
+    <a href="#code/src/test/scala/twine/app/climate/ClimateApiSpec" class="shortcut">ClimateApiSpec</a>
+    defines the unit test for <a href="#code/src/main/scala/twine/app/climate/ClimateApi" class="shortcut">ClimateApi</a>.
   </p>
   <p>
     It uses the spray testkit and the Mokito mocking framework to run an isolated
@@ -297,12 +297,12 @@ val pipeline: HttpRequest => Future[Seq[WbClimateData]] =
 <div>
   <h2>Integration Testing</h2>
   <p>
-    <a href="#code/src/test/scala/sandbox/app/climate/ClimateApiIntegSpec" class="shortcut">ClimateApiIntegSpec</a>
+    <a href="#code/src/test/scala/twine/app/climate/ClimateApiIntegSpec" class="shortcut">ClimateApiIntegSpec</a>
     extends the unit test to run against a real service.
   </p>
   <p>
     Instead of creating route with ClimateApi and a mock ClientService, it uses
-    the getAppRouteInstance defined in <a href="#code/src/test/scala/sandbox/IntegTestSupport" class="shortcut">IntegTestSupport</a>
+    the getAppRouteInstance defined in <a href="#code/src/test/scala/twine/IntegTestSupport" class="shortcut">IntegTestSupport</a>
   </p>
   <p>
     This returns a route that is implemented as the real application, which has been
