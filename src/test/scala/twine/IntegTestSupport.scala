@@ -37,7 +37,7 @@ trait IntegTestSupport extends IntegrationPatience
     /**
      * Provides the test entry point for the application router.  The actual
      * application creates the router using the actor
-     * [[RestServiceActor]]
+     * [[twine.rest.RestServiceActor]]
      */
     @Provides
     def provideApiRouter(apiSet: Set[RestComponent], arf: ActorRefFactory): RestService = {

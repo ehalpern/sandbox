@@ -15,7 +15,6 @@ class RestModule extends ScalaModule
 {
   def configure {
     bind[RestServer]
-    bind[RestService]
   }
 
   /**
